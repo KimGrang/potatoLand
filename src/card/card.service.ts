@@ -11,9 +11,8 @@ import {
   CreateCardDto,
   CardDetailsDto,
   UpdateCardDto,
-  // ReorderCardsDto,
+  ReorderCardsDto,
 } from "./dto/card.dto";
-import { ReorderCardsDto } from "./dto/reorder.dto";
 
 @Injectable()
 export class CardService {

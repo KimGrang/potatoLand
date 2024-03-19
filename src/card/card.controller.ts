@@ -8,8 +8,7 @@ import {
   Post,
 } from "@nestjs/common";
 import { CardService } from "./card.service";
-import { CreateCardDto, UpdateCardDto } from "./dto/card.dto";
-import { ReorderCardsDto } from "./dto/reorder.dto";
+import { CreateCardDto, UpdateCardDto, ReorderCardsDto } from "./dto/card.dto";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 
 @ApiTags("Card")
@@ -65,6 +64,7 @@ export class CardController {
     return { message: "카드가 성공적으로 삭제되었습니다" };
   }
 
+  // @ApiOperation({ summary: "카드 (컬럼?보드?) 이동" })
   // @Patch('move')
   // async moveCard(@Body() moveCardDto: MoveCardDto) {
   //   await this.cardService.moveCard(moveCardDto);
