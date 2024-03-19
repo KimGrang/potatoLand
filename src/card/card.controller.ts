@@ -37,6 +37,13 @@ export class CardController {
     return { message: "카드의 상세정보를 읽어왔습니다.", data: cardDetails };
   }
 
+  @Patch("reorder")
+  async reorderCards(@Body() reorderCardsDto: ReorderCardsDto) {
+    console.log("redoreder - - - - - - - ", reorderCardsDto);
+    await this.cardService.reorderCards(reorderCardsDto);
+    return { message: "카드가 성공적으로 재정렬 되었습니다." };
+  }
+
   @Patch(":id")
   async updateCard(
     @Param("id") cardId: number,
@@ -53,13 +60,6 @@ export class CardController {
   async deleteCard(@Param("id") cardId: number) {
     await this.cardService.deleteCard(cardId);
     return { message: "카드가 성공적으로 삭제되었습니다" };
-  }
-
-  @Patch("reorder")
-  async reorderCards(@Body() reorderCardsDto: ReorderCardsDto) {
-    console.log("redoreder - - - - - - - ", reorderCardsDto);
-    await this.cardService.reorderCards(reorderCardsDto);
-    return { message: "카드가 성공적으로 재정렬 되었습니다." };
   }
 
   // @Patch('move')
