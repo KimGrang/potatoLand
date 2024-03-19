@@ -5,12 +5,14 @@ import { ConfigModule } from '@nestjs/config';
 import { configModuleValidationSchema } from 'configs/envValidation.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmModuleOptions } from 'configs/database.config';
+import { ColumModule } from './colum/colum.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
   isGlobal: true, validationSchema: configModuleValidationSchema
   }),
-  TypeOrmModule.forRootAsync(typeOrmModuleOptions)
+  TypeOrmModule.forRootAsync(typeOrmModuleOptions),
+  ColumModule
   ],
   controllers: [AppController],
   providers: [AppService],
