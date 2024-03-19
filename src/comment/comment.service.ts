@@ -1,26 +1,72 @@
-import { Injectable } from '@nestjs/common';
-import { CreateCommentDto } from './dto/create-comment.dto';
-import { UpdateCommentDto } from './dto/update-comment.dto';
+// comment.service.ts
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Comment } from './entities/comment.entity';
+import { CreateCommentDto, UpdateCommentDto } from './dto/comment.dto';
 
 @Injectable()
 export class CommentService {
-  create(createCommentDto: CreateCommentDto) {
-    return 'This action adds a new comment';
+  constructor(
+    @InjectRepository(Comment)
+    private readonly commentRepository: Repository<Comment>,
+  ) {}
+
+  /**
+   * Create a new comment for a card.
+   * @param {number} cardId - ID of the card to which the comment belongs.
+   * @param {number} userId - The ID of the user making request.
+   * @param {CreateCommentDto} createCommentDto - Data for creating a comment.
+   * @returns {Promise<Comment>} - The created comment.
+   */
+  async createComment(
+    // cardId: number,
+    // userId: number,
+    createCommentDto: CreateCommentDto,
+  ): Promise<Comment> {
+    // Create a new comment
+    const comment = this.commentRepository.create({
+      comment: createCommentDto.comment,
+      // card: { id: cardId },
+      // author: { id: userId },
+    });
+
+    return this.commentRepository.save(comment);
   }
 
-  findAll() {
-    return `This action returns all comment`;
+  /**
+   * Update a comment.
+   * @param {number} commentId - ID of the comment to update.
+   * @param {UpdateCommentDto} updateCommentDto - Updated comment data.
+   * @returns {Promise<Comment>} - The updated comment.
+   * @throws {NotFoundException} - If the comment with specified ID is not found.
+   */
+  async updateComment(
+    commentId: number,
+    updateCommentDto: UpdateCommentDto,
+  ): Promise<Comment> {
+    const comment = await this.commentRepository.findOne({
+      where: {
+        id: commentId,
+      },
+    });
+
+    if (!comment) {
+      throw new NotFoundException('Comment not found');
+    }
+
+    comment.comment = updateCommentDto.comment;
+
+    return this.commentRepository.save(comment);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} comment`;
-  }
-
-  update(id: number, updateCommentDto: UpdateCommentDto) {
-    return `This action updates a #${id} comment`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} comment`;
+  /**
+   * Delete a comment.
+   * @param {number} commentId - ID of the comment to delete.
+   * @returns {Promise<void>}
+   * @throws {NotFoundException} - If the comment with specified ID is not found.
+   */
+  async deleteComment(commentId: number): Promise<void> {
+    await this.commentRepository.delete(commentId);
   }
 }

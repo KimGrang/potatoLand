@@ -1,34 +1,49 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { CommentService } from './comment.service';
-import { CreateCommentDto } from './dto/create-comment.dto';
-import { UpdateCommentDto } from './dto/update-comment.dto';
+import { CreateCommentDto, UpdateCommentDto } from './dto/comment.dto';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
-@Controller('comment')
+@ApiTags('Comments')
+@Controller('comments')
 export class CommentController {
   constructor(private readonly commentService: CommentService) {}
 
-  @Post()
-  create(@Body() createCommentDto: CreateCommentDto) {
-    return this.commentService.create(createCommentDto);
+  @ApiOperation({ summary: 'Create a new comment for a card' })
+  @Post(':cardId')
+  async createComment(
+    @Param('cardId') cardId: number,
+    @Body() createCommentDto: CreateCommentDto,
+  ) {
+    const newComment =
+      await this.commentService.createComment(createCommentDto);
+    return { message: 'Comment created successfully', data: newComment };
   }
 
-  @Get()
-  findAll() {
-    return this.commentService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.commentService.findOne(+id);
-  }
-
+  @ApiOperation({ summary: 'Update a comment' })
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCommentDto: UpdateCommentDto) {
-    return this.commentService.update(+id, updateCommentDto);
+  async updateComment(
+    @Param('id') commentId: number,
+    @Body() updateCommentDto: UpdateCommentDto,
+  ) {
+    const updatedComment = await this.commentService.updateComment(
+      commentId,
+      updateCommentDto,
+    );
+    return { message: 'Comment updated successfully', data: updatedComment };
   }
 
+  @ApiOperation({ summary: 'Delete a comment' })
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.commentService.remove(+id);
+  async deleteComment(@Param('id') commentId: number) {
+    await this.commentService.deleteComment(commentId);
+    return { message: 'Comment deleted successfully' };
   }
 }
