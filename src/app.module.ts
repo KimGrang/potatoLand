@@ -1,14 +1,14 @@
-
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { ConfigModule } from '@nestjs/config';
-import { configModuleValidationSchema } from 'configs/envValidation.config';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { typeOrmModuleOptions } from 'configs/database.config';
-import { ColumModule } from './colum/colum.module';
-import { UserModule } from './user/user.module';
+import { Module } from "@nestjs/common";
+import { AppController } from "./app.controller";
+import { AppService } from "./app.service";
+import { ConfigModule } from "@nestjs/config";
+import { configModuleValidationSchema } from "configs/envValidation.config";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { typeOrmModuleOptions } from "configs/database.config";
+import { ColumModule } from "./colum/colum.module";
+import { UserModule } from "./user/user.module";
 import { CardModule } from "./card/card.module";
+import { BoardModule } from "./board/board.module";
 
 @Module({
   imports: [
@@ -18,6 +18,9 @@ import { CardModule } from "./card/card.module";
     }),
     TypeOrmModule.forRootAsync(typeOrmModuleOptions),
     BoardModule,
+    ColumModule,
+    UserModule,
+    CardModule,
   ],
   controllers: [AppController],
   providers: [AppService],

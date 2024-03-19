@@ -2,19 +2,21 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Board } from "./entities/board.entity";
 import { BoardMember } from "./entities/boardMember.entity";
 import { CreateBoardDto } from "./dto/createBoard.dto";
-import { User } from "./entities/user.entity.temp";
+import { User } from "../user/entity/user.entity";
 import _ from "lodash";
 import { BoardMemberType } from "./types/boardMember.type";
 import { UpdateBoardDto } from "./dto/updateBoard.dto";
 import { InviteBoardDto } from "./dto/inviteBoard.dto";
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
+import * as nodemailer from "nodemailer";
 
 @Injectable()
 export class BoardService {
@@ -23,6 +25,8 @@ export class BoardService {
     private readonly boardRepository: Repository<Board>,
     @InjectRepository(BoardMember)
     private readonly boardMemberRepository: Repository<BoardMember>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {}
@@ -108,6 +112,53 @@ export class BoardService {
 
     const { userId, role, expiresIn } = inviteBoardDto;
     const payload = { userId, role, boardId: id };
+    const token = this.jwtService.sign(payload, { expiresIn: `${expiresIn}h` });
+    const inviteLink = `http://localhost:3000/api/board/confirm?token=${token}`;
+    const sendTo = await this.userRepository.findOneBy({ id: userId });
+
+    const transporter = nodemailer.createTransport({
+      service: "Gmail",
+      auth: {
+        user: this.configService.get<string>("GMAIL_USER_BOARD"),
+        pass: this.configService.get<string>("GMAIL_PASS_BOARD"),
+      },
+    });
+
+    await transporter.sendMail({
+      from: this.configService.get<string>("GMAIL_USER_BOARD"),
+      to: sendTo.email,
+      subject: `potatoLand: you are currently invited to board no.${id}`,
+      html: `<p>Click <a href="${inviteLink}">here</a> to accept invitation</p>`,
+    });
+
+    return { message: "초대 링크가 해당 사용자의 이메일로 전송되었습니다." };
+  }
+
+  async confirm(token: string) {
+    try {
+      const decodedToken = this.jwtService.verify(token, {
+        secret: this.configService.get<string>("JWT_SECRET_BOARD"),
+      });
+      const { userId, boardId, role } = decodedToken;
+
+      const user = await this.userRepository.findOneBy({ id: userId });
+      if (_.isNil(user)) {
+        throw new NotFoundException("존재하지 않는 사용자입니다.");
+      }
+      const board = await this.boardRepository.findOneBy({ id: boardId });
+      if (_.isNil(board)) {
+        throw new NotFoundException("존재하지 않는 보드입니다.");
+      }
+      await this.boardMemberRepository.save({
+        board,
+        user,
+        role,
+      });
+
+      return { message: `${boardId}번 보드에 초대되셨습니다.` };
+    } catch (err) {
+      throw new UnauthorizedException("유효하지 않은 토큰입니다.");
+    }
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////

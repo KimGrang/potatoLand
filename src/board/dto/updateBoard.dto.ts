@@ -1,36 +1,27 @@
-import { IsEnum, IsNotEmpty, IsOptional, IsString } from "class-validator";
-import { BoardVisibility } from "../types/boardVisibility.type";
-import { ApiProperty } from "@nestjs/swagger";
-import { InviteOption } from "../types/inviteOption.type";
+import { IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { PickType } from "@nestjs/swagger";
+import { Board } from "../entities/board.entity";
 
-export class UpdateBoardDto {
-  @ApiProperty()
+export class UpdateBoardDto extends PickType(Board, [
+  "description",
+  "visibility",
+  "inviteOption",
+]) {
+  /**
+   * name
+   * @example "Done"
+   */
   @IsOptional()
   @IsString()
   @IsNotEmpty()
   name?: string;
 
-  @ApiProperty()
+  /**
+   * backgroundColor
+   * @example "blue"
+   */
   @IsOptional()
   @IsString()
   @IsNotEmpty()
   backgroundColor?: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  @IsNotEmpty()
-  description?: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsEnum(BoardVisibility)
-  @IsNotEmpty()
-  visibility?: BoardVisibility;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsEnum(InviteOption)
-  @IsNotEmpty()
-  inviteOption?: InviteOption;
 }

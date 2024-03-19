@@ -9,10 +9,7 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
   const PORT = configService.get("SERVER_PORT");
-  const configService = app.get(ConfigService);
-  const PORT = configService.get("SERVER_PORT");
 
-  app.setGlobalPrefix("api", { exclude: ["/health-check"] });
   app.setGlobalPrefix("api", { exclude: ["/health-check"] });
 
   app.useGlobalPipes(
@@ -22,23 +19,7 @@ async function bootstrap() {
       // forbidNonWhitelisted: true,
     }),
   );
-  app.useGlobalPipes(
-    new ValidationPipe({
-      transform: true,
-      whitelist: true,
-      forbidNonWhitelisted: true,
-    }),
-  );
 
-  //Swagger
-  const config = new DocumentBuilder()
-    .setTitle("Welcome to PotatoLand!")
-    .setDescription("How would you like your work to be with potatoes?")
-    .setVersion("1.0")
-    .addBearerAuth({ type: "http", scheme: "bearer", bearerFormat: "JWT" })
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup("api", app, document);
   //Swagger
   const config = new DocumentBuilder()
     .setTitle("Welcome to PotatoLand!")

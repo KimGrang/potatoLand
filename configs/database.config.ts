@@ -5,7 +5,7 @@ import {
 } from "@nestjs/typeorm";
 import { Board } from "../src/board/entities/board.entity";
 import { BoardMember } from "../src/board/entities/boardMember.entity";
-import { User } from "../src/board/entities/user.entity.temp";
+import { User } from "../src/user/entity/user.entity";
 import { SnakeNamingStrategy } from "typeorm-naming-strategies";
 
 export const typeOrmModuleOptions: TypeOrmModuleAsyncOptions = {
