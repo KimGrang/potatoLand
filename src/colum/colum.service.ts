@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateColumDto } from './dto/createColum.dto';
 import { UpdateColumDto } from './dto/updateColum.dto';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Colum } from './entities/colum.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import _, { isNil } from 'lodash';
@@ -55,4 +55,25 @@ export class ColumService {
   }
 
   //컬럼 순서 이동
+  async reorderColum(columIds: number[]) {
+    const colums = await this.columRepository.find({
+      where: {
+        id: In(columIds)
+      }
+    });
+    if(colums.length !== columIds.length) {
+      throw new BadRequestException('유효하지 않은 요청입니다.')
+    }
+    const ordersMap = columIds.reduce((map, id, index) => {
+      map[id] = index + 1
+      return map;
+    }, {});
+
+    await Promise.all(
+      colums.map((colum) => {
+        colum.columOrder = ordersMap[colum.id];
+        return this.columRepository.save(colum)
+      })
+    )
+  }
 }
