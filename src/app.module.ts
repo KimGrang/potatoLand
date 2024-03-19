@@ -1,3 +1,4 @@
+
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -7,6 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmModuleOptions } from 'configs/database.config';
 import { ColumModule } from './colum/colum.module';
 import { UserModule } from './user/user.module';
+import { CardModule } from "./card/card.module";
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -14,7 +16,9 @@ import { UserModule } from './user/user.module';
   }),
   TypeOrmModule.forRootAsync(typeOrmModuleOptions),
   ColumModule,
+  CardModule,
   UserModule
+
   ],
   controllers: [AppController],
   providers: [AppService],
