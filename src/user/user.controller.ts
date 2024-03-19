@@ -3,7 +3,7 @@ import { UserService } from './user.service';
 import { Response } from 'express';
 import { SignUpDto } from './dto/signup.dto';
 import { SignInDto } from './dto/signin.dto';
-import { ApiCreatedResponse, ApiOperation } from '@nestjs/swagger';
+import { ApiOperation } from '@nestjs/swagger';
 
 @Controller('users')
 export class UserController {

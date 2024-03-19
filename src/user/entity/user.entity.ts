@@ -1,4 +1,4 @@
-import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Index('email', ['email'], {unique : true})
 @Entity({name : 'users'})
@@ -17,12 +17,12 @@ export class User {
   name : string;
 
   @Column({type : 'varchar'})
-  imdage : string
+  image : string
   
-  @Column({type : 'date', default : () => 'CURRENT_TIMESTAMP'})
+  @CreateDateColumn()
   created_at : Date;
 
-  @Column({type : 'date', default : () => 'CURRENT_TIMESTAMP'})
+  @UpdateDateColumn()
   updated_at : Date;
 
   @Column({type : 'varchar', nullable : false})
