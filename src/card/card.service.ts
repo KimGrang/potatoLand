@@ -2,54 +2,117 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
 import { Card } from "./entities/card.entity";
-import { CreateCardDto } from "./dto/create-card.dto";
-import { UpdateCardDto } from "./dto/update-card.dto";
+import { In, Repository } from "typeorm";
+import {
+  CreateCardDto,
+  CardDetailsDto,
+  UpdateCardDto,
+  // ReorderCardsDto,
+} from "./dto/card.dto";
+import { ReorderCardsDto } from "./dto/reorder.dto";
 
 @Injectable()
 export class CardService {
   constructor(
-    @InjectRepository(Card) private readonly cardRepository: Repository<Card>,
+    @InjectRepository(Card)
+    private readonly cardRepository: Repository<Card>,
   ) {}
 
-  async create(createCardDto: CreateCardDto) {
-    const { ...restOfCard } = createCardDto;
+  async createCard(createCardDto: CreateCardDto) {
+    const { cardOrder, title, desc, color } = createCardDto;
 
-    const existedCard = await this.cardRepository.findOneBy({
-      title: createCardDto.title,
+    const newCard = this.cardRepository.create({
+      cardOrder: cardOrder,
+      title: title,
+      desc: desc,
+      color: color,
     });
 
-    if (existedCard) {
-      throw new BadRequestException("이미 사용 중인 공연명입니다.");
+    return this.cardRepository.save(newCard);
+  }
+
+  async getCards(): Promise<Card[]> {
+    const cards = this.cardRepository.find();
+    return cards;
+  }
+
+  async getCardDetails(cardId: number): Promise<CardDetailsDto> {
+    const card = await this.cardRepository.findOne({
+      where: {
+        id: cardId,
+      },
+      // relations: {
+      //   comments: true,
+      // },
+    });
+
+    if (!card) {
+      throw new NotFoundException("Card not found");
     }
 
-    const card = await this.cardRepository.save({
-      ...restOfCard,
-    });
-    return card;
+    const cardDetails: CardDetailsDto = {
+      cardOrder: card.cardOrder,
+      title: card.title,
+      desc: card.desc,
+      color: card.color,
+      id: card.id,
+      createdAt: card.createdAt,
+      updatedAt: card.updatedAt,
+    };
+
+    return cardDetails;
   }
 
-  async update(id: number, cardDto: UpdateCardDto): Promise<Card> {
-    await this.cardRepository.update(id, cardDto);
-    return this.cardRepository.findOne({
+  async updateCard(updateCardDto: UpdateCardDto, cardId: number) {
+    const { title, desc, color } = updateCardDto;
+    const card = await this.cardRepository.findOne({
       where: {
-        id: id,
+        id: cardId,
       },
     });
+
+    if (!card) {
+      throw new NotFoundException("Card not found");
+    }
+
+    card.title = title ? title : card.title;
+    card.desc = desc ? desc : card.desc;
+    card.color = color ? color : card.color;
+
+    return this.cardRepository.save(card);
   }
 
-  async delete(id: number): Promise<void> {
-    await this.cardRepository.delete(id);
+  async deleteCard(cardId: number): Promise<void> {
+    await this.cardRepository.delete(cardId);
   }
 
-  async move(id: number, newPosition: number): Promise<void> {
-    await this.cardRepository.update(id, { cardOrder: newPosition });
+  async reorderCards(reorderCardsDto: ReorderCardsDto): Promise<void> {
+    // const { cardIds } = reorderCardsDto;
+    // console.log("국밥1  ------", cardIds);
+    // const cards = await this.cardRepository.find({
+    //   where: {
+    //     id: In(cardIds),
+    //   },
+    // });
+    // // if (cards.length !== cardIds.length) {
+    // //   throw new UnauthorizedException("One or more cards not found");
+    // // }
+    // console.log("국밥1  ------");
+    // const ordersMap = cardIds.reduce((map, id, index) => {
+    //   map[id] = index + 1;
+    //   return map;
+    // });
+    // console.log("국밥2  ------");
+    // await Promise.all(
+    //   cards.map((card) => {
+    //     card.cardOrder = ordersMap[card.id];
+    //     console.log("국밥3  ------");
+    //     return this.cardRepository.save(card);
+    //   }),
+    // );
   }
-
-  // async moveBetweenColumns(id: number, newColumnId: number): Promise<void> {
-  //   await this.cardRepository.update(id, { columnId: newColumnId });
-  // }
 }

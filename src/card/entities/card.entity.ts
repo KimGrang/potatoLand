@@ -2,38 +2,46 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 
+// import { Board } from '../board/board.entity';
+// import { Comment } from '../comment/comment.entity';
+
 @Entity("card")
 export class Card {
-  @PrimaryGeneratedColumn({ unsigned: true })
+  @PrimaryGeneratedColumn({ type: "int", unsigned: true })
   id: number;
 
   @IsNumber()
-  @Column()
+  @Column({ type: "int", default: 1 })
   cardOrder: number;
 
   @IsNotEmpty({ message: "카드 명을 입력해 주세요." })
   @IsString()
-  @Column()
+  @Column({ type: "varchar" })
   title: string;
 
-  @IsNotEmpty({ message: "업무 명을 입력해 주세요." })
   @IsString()
-  @Column({ type: "text" })
+  @Column({ type: "varchar", nullable: true })
   desc: string;
 
-  @IsNotEmpty({ message: "색깔을 입력해 주세요." })
   @IsString()
-  @Column()
+  @Column({ type: "varchar", nullable: true })
   color: string;
 
-  @CreateDateColumn()
-  createAt: Date;
+  @CreateDateColumn({ update: false })
+  createdAt: Date;
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  // @OneToMany(()=>Comment,(comment)=>comment.card)
+  // comment:Comment[];
+
+  // @ManyToOne(()=>Worker,(worker)=>worker.cards)
+  // worker:Worker;
 }

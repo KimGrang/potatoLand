@@ -1,0 +1,6 @@
+PATCH http://localhost:3000/api/card/reorder 
+Content-Type: application/json
+
+{
+	"cardIds" : 1
+}

@@ -3,56 +3,68 @@ import {
   Controller,
   Delete,
   Get,
-  HttpStatus,
   Param,
   Patch,
   Post,
 } from "@nestjs/common";
-import { Card } from "./entities/card.entity";
 import { CardService } from "./card.service";
-import { CreateCardDto } from "./dto/create-card.dto";
-import { UpdateCardDto } from "./dto/update-card.dto";
+import { CreateCardDto, UpdateCardDto } from "./dto/card.dto";
+import { ReorderCardsDto } from "./dto/reorder.dto";
+import { ApiOperation, ApiTags } from "@nestjs/swagger";
 
+@ApiTags("Card")
 @Controller("card")
 export class CardController {
   constructor(private readonly cardService: CardService) {}
 
+  @ApiOperation({ summary: "카드 생성" })
   @Post()
-  async create(@Body() createCardDto: CreateCardDto) {
-    const data = await this.cardService.create(createCardDto);
-    return {
-      statusCode: HttpStatus.CREATED,
-      message: "공연 생성에 성공했습니다.",
-      data,
-    };
+  async createCard(@Body() createCardDto: CreateCardDto) {
+    const newCard = await this.cardService.createCard(createCardDto);
+    return { message: "카드가 성공적으로 생성되었습니다.", data: { newCard } };
+  }
+
+  @ApiOperation({ summary: "모든 카드 정보 확인" })
+  @Get()
+  async getCard() {
+    const cards = await this.cardService.getCards();
+    return { message: "모든 카드 정보.", data: { cards } };
+  }
+
+  @Get(":id")
+  async getCardDetails(@Param("id") cardId: number) {
+    const cardDetails = await this.cardService.getCardDetails(cardId);
+    return { message: "카드의 상세정보를 읽어왔습니다.", data: cardDetails };
   }
 
   @Patch(":id")
-  async update(
-    @Param("id") id: number,
+  async updateCard(
+    @Param("id") cardId: number,
     @Body() updateCardDto: UpdateCardDto,
-  ): Promise<Card> {
-    return this.cardService.update(id, updateCardDto);
+  ) {
+    const updatedCard = await this.cardService.updateCard(
+      updateCardDto,
+      cardId,
+    );
+    return { message: "카드가 성공적으로 수정되었습니다.", data: updatedCard };
   }
 
   @Delete(":id")
-  async delete(@Param("id") id: number): Promise<void> {
-    return this.cardService.delete(id);
+  async deleteCard(@Param("id") cardId: number) {
+    await this.cardService.deleteCard(cardId);
+    return { message: "카드가 성공적으로 삭제되었습니다" };
   }
 
-  @Patch(":id/move/:newPosition")
-  async move(
-    @Param("id") id: number,
-    @Param("newPosition") newPosition: number,
-  ): Promise<void> {
-    return this.cardService.move(id, newPosition);
+  @Patch("reorder")
+  async reorderCards(@Body() reorderCardsDto: ReorderCardsDto) {
+    console.log("redoreder - - - - - - - ", reorderCardsDto);
+    await this.cardService.reorderCards(reorderCardsDto);
+    return { message: "카드가 성공적으로 재정렬 되었습니다." };
   }
 
-  // @Patch(":id/move-to-column/:newColumnId")
-  // async moveBetweenColumns(
-  //   @Param("id") id: number,
-  //   @Param("newColumnId") newColumnId: number,
-  // ): Promise<void> {
-  //   return this.cardService.moveBetweenColumns(id, newColumnId);
+  // @Patch('move')
+  // async moveCard(@Body() moveCardDto: MoveCardDto) {
+  //   await this.cardService.moveCard(moveCardDto);
+  //   return { message: '카드가 성공적으로 이동되었습니다' };
   // }
 }
