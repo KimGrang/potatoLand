@@ -45,9 +45,6 @@ export class CardService {
       where: {
         id: cardId,
       },
-      // relations: {
-      //   comments: true,
-      // },
     });
 
     if (!card) {
@@ -92,7 +89,6 @@ export class CardService {
 
   async reorderCards(reorderCardsDto: ReorderCardsDto): Promise<void> {
     const { cardIds } = reorderCardsDto;
-    console.log("국밥0  ------", cardIds);
     const cards = await this.cardRepository.find({
       where: {
         id: In(cardIds),
@@ -101,16 +97,13 @@ export class CardService {
     if (cards.length !== cardIds.length) {
       throw new UnauthorizedException("One or more cards not found");
     }
-    console.log("국밥1  ------");
     const ordersMap = cardIds.reduce((map, id, index) => {
       map[id] = index + 1;
       return map;
     }, {});
-    console.log("국밥2  ------", ordersMap);
     await Promise.all(
       cards.map((card) => {
         card.cardOrder = ordersMap[card.id];
-        console.log("국밥3  ------");
         return this.cardRepository.save(card);
       }),
     );
