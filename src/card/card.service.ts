@@ -95,7 +95,7 @@ export class CardService {
       },
     });
     if (cards.length !== cardIds.length) {
-      throw new UnauthorizedException("One or more cards not found");
+      throw new NotFoundException("해당 Id의 카드를 찾을 수 없습니다.");
     }
     const ordersMap = cardIds.reduce((map, id, index) => {
       map[id] = index + 1;

@@ -31,19 +31,21 @@ export class CardController {
     return { message: "모든 카드 정보.", data: { cards } };
   }
 
+  @ApiOperation({ summary: "카드 상세정보 확인" })
   @Get(":id")
   async getCardDetails(@Param("id") cardId: number) {
     const cardDetails = await this.cardService.getCardDetails(cardId);
     return { message: "카드의 상세정보를 읽어왔습니다.", data: cardDetails };
   }
 
+  @ApiOperation({ summary: "카드들 재정렬" })
   @Patch("reorder")
   async reorderCards(@Body() reorderCardsDto: ReorderCardsDto) {
-    console.log("redoreder - - - - - - - ", reorderCardsDto);
     await this.cardService.reorderCards(reorderCardsDto);
     return { message: "카드가 성공적으로 재정렬 되었습니다." };
   }
 
+  @ApiOperation({ summary: "카드 상세정보 수정" })
   @Patch(":id")
   async updateCard(
     @Param("id") cardId: number,
@@ -56,6 +58,7 @@ export class CardController {
     return { message: "카드가 성공적으로 수정되었습니다.", data: updatedCard };
   }
 
+  @ApiOperation({ summary: "카드 삭제" })
   @Delete(":id")
   async deleteCard(@Param("id") cardId: number) {
     await this.cardService.deleteCard(cardId);
