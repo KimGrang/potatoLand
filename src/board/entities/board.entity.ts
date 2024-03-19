@@ -5,15 +5,18 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from 'typeorm';
-import { BoardType } from '../types/board.type';
-import { Invite } from './invite.entity';
-import { IsDate, IsEnum, IsInt, IsString } from 'class-validator';
+} from "typeorm";
+import { BoardVisibility } from "../types/boardVisibility.type";
+import { IsDate, IsEnum, IsInt, IsString } from "class-validator";
+import { BoardMember } from "./boardMember.entity";
+import { User } from "./user.entity.temp";
+import { InviteOption } from "../types/inviteOption.type";
 @Entity({
-  name: 'board',
+  name: "board",
 })
 export class Board {
   @IsInt()
@@ -21,20 +24,35 @@ export class Board {
   id: number;
 
   @IsString()
-  @Column({ type: 'varchar', length: 50 })
+  @Column({ type: "varchar", length: 50 })
   name: string;
 
   @IsString()
-  @Column({ type: 'text', length: 100, nullable: true })
+  @Column({ type: "varchar", length: 100, nullable: true })
   description: string;
 
   @IsString()
-  @Column({ type: 'varchar', length: 7 })
+  @Column({ type: "varchar", length: 7 })
   backgroundColor: string; // #FFFFFF
 
-  @IsEnum(BoardType)
-  @Column({ type: 'enum', enum: BoardType, default: BoardType.public })
-  status: BoardType;
+  @IsEnum(BoardVisibility)
+  @Column({
+    type: "enum",
+    enum: BoardVisibility,
+    default: BoardVisibility.PUBLIC,
+  })
+  visibility: BoardVisibility;
+
+  @IsEnum(InviteOption)
+  @Column({
+    type: "enum",
+    enum: InviteOption,
+    default: InviteOption.ALL_MEMBER,
+  })
+  inviteOption: InviteOption;
+
+  @ManyToOne(() => User, (user) => user.boards)
+  createdBy: User;
 
   @IsDate()
   @CreateDateColumn()
@@ -48,10 +66,6 @@ export class Board {
   @DeleteDateColumn()
   deletedAt: Date;
 
-  @ManyToMany(() => User)
-  @JoinTable()
-  users: User[];
-
-  @OneToMany(() => Invite, (invite) => invite.board)
-  invites: Invite[];
+  @OneToMany(() => BoardMember, (boardMember) => boardMember.board)
+  members: BoardMember[];
 }
