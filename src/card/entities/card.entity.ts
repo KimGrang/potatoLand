@@ -10,7 +10,7 @@ import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 
 // import { Board } from '../board/board.entity';
-// import { Comment } from '../comment/comment.entity';
+import { Comment } from "../../comment/entities/comment.entity";
 
 @Entity("card")
 export class Card {
@@ -53,8 +53,8 @@ export class Card {
   })
   updatedAt: Date;
 
-  // @OneToMany(()=>Comment,(comment)=>comment.card)
-  // comment:Comment[];
+  @OneToMany(() => Comment, (comment) => comment.card)
+  comments: Comment[];
 
   // @ManyToOne(()=>Worker,(worker)=>worker.cards)
   // worker:Worker;
