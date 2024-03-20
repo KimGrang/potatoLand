@@ -55,8 +55,8 @@ export class Card {
   })
   updatedAt: Date;
 
-  @ManyToOne(() => Colum, colum => colum.card, {onDelete: 'CASCADE'})
-  colum: Colum[]
+  // @ManyToOne(() => Colum, colum => colum.card, {onDelete: 'CASCADE'})
+  // colum: Colum[]
 
   // @OneToMany(()=>Comment,(comment)=>comment.card)
   // comment:Comment[];

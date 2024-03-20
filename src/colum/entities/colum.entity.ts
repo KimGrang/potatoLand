@@ -41,10 +41,10 @@ export class Colum {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToMany(() => Card, card => card.colum)
-  card: Card[]
+  // @OneToMany(() => Card, card => card.colum)
+  // card: Card[]
 
-  @ManyToOne(()=> Board, board => board.colum, {onDelete: 'CASCADE'})
-  board: Board;
+  // @ManyToOne(()=> Board, board => board.colum, {onDelete: 'CASCADE'})
+  // board: Board;
   
 }

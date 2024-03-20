@@ -43,6 +43,8 @@ export class User {
    * 이름
    * @example "국밥"
    */
+  @IsNotEmpty({ message: "이름을 입력해 주세요." }) 
+  @IsString() 
   @Column({ type: "varchar", nullable: false })
   name: string;
 
