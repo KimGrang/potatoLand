@@ -1,5 +1,5 @@
 import { IsEnum, IsInt, IsNotEmpty, IsOptional } from "class-validator";
-import { BoardMemberType } from "../type/boardMember.type";
+import { BoardMemberType } from "../types/boardMember.type";
 
 export class InviteBoardDto {
   /**

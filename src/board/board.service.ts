@@ -11,7 +11,7 @@ import { BoardMember } from "./entities/boardMember.entity";
 import { CreateBoardDto } from "./dto/createBoard.dto";
 import { User } from "../user/entity/user.entity";
 import _ from "lodash";
-import { BoardMemberType } from "./type/boardMember.type";
+import { BoardMemberType } from "./types/boardMember.type";
 import { UpdateBoardDto } from "./dto/updateBoard.dto";
 import { InviteBoardDto } from "./dto/inviteBoard.dto";
 import { JwtService } from "@nestjs/jwt";
