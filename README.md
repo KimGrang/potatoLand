@@ -37,16 +37,17 @@
   PASSWORD_HASH_ROUND = 
 
   ##jwt
+  JWT_SECRET =
 
-  JWT_SECRET = 
+  ##nodemailer
 
-  ##nodemailder
+  GMAIL_USER =
+  
+  GMAIL_PASS =
 
   GMAIL_USER_BOARD =
-
+  
   GMAIL_PASS_BOARD =
-
-  ##board
   
   JWT_SECRET_BOARD =
 

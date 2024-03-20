@@ -146,6 +146,6 @@ export class Board {
   })
   members: BoardMember[];
 
-  // @OneToMany(()=> Colum, colum => colum.board)
-  // colum: Colum[]
+  @OneToMany(()=> Colum, colum => colum.board)
+  colum: Colum[]
 }

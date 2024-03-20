@@ -18,6 +18,8 @@ import { UpdateBoardDto } from "./dto/updateBoard.dto";
 import { InviteBoardDto } from "./dto/inviteBoard.dto";
 import { UserInfo } from "src/user/decorator/userInfo.decorator";
 import { AuthGuard } from "@nestjs/passport";
+import { UpdateMemberDto } from "./dto/updateMember.dto";
+import { DeleteMemberDto } from "./dto/deleteMember.dto";
 
 @ApiTags("Board")
 @UseGuards(AuthGuard("jwt"))
@@ -75,5 +77,25 @@ export class BoardController {
   @Get(":id")
   async getBoardById(@UserInfo() user: User, @Param("id") id: number) {
     return await this.boardService.getBoardById(user, id);
+  }
+
+  @ApiOperation({ summary: "보드의 관리자가 보드 멤버의 권한 변경하기" })
+  @Patch(":id/changeRole")
+  async updateMemberRole(
+    @UserInfo() user: User,
+    @Param("id") id: number,
+    @Body() updateMemberDto: UpdateMemberDto,
+  ) {
+    return await this.boardService.updateMemberRole(user, id, updateMemberDto);
+  }
+
+  @ApiOperation({ summary: "보드의 관리자가 보드 멤버 삭제하기" })
+  @Delete(":id/deleteMember")
+  async deleteMember(
+    @UserInfo() user: User,
+    @Param("id") id: number,
+    @Body() deleteMemberDto: DeleteMemberDto,
+  ) {
+    return await this.boardService.deleteMember(user, id, deleteMemberDto);
   }
 }

@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   Entity,
   Index,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -70,4 +71,5 @@ export class User {
 
   @OneToMany(() => Board, (Board) => Board.createdBy)
   boards: Board[];
+
 }

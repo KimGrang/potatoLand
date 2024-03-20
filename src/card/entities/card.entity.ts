@@ -12,7 +12,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Colum } from "src/colum/entities/colum.entity";
 
 // import { Board } from '../board/board.entity';
-// import { Comment } from '../comment/comment.entity';
+import { Comment } from "../../comment/entities/comment.entity";
 
 @Entity("card")
 export class Card {
@@ -55,12 +55,11 @@ export class Card {
   })
   updatedAt: Date;
 
-  // @ManyToOne(() => Colum, colum => colum.card, {onDelete: 'CASCADE'})
-  // colum: Colum[]
 
-  // @OneToMany(()=>Comment,(comment)=>comment.card)
-  // comment:Comment[];
+  @ManyToOne(() => Colum, colum => colum.card, {onDelete: 'CASCADE'})
+  colum: Colum[]
 
-  // @ManyToOne(()=>Worker,(worker)=>worker.cards)
-  // worker:Worker;
+  @OneToMany(() => Comment, (comment) => comment.card)
+  comments: Comment[];
+
 }

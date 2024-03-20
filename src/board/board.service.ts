@@ -17,6 +17,8 @@ import { InviteBoardDto } from "./dto/inviteBoard.dto";
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import * as nodemailer from "nodemailer";
+import { UpdateMemberDto } from "./dto/updateMember.dto";
+import { DeleteMemberDto } from "./dto/deleteMember.dto";
 
 @Injectable()
 export class BoardService {
@@ -177,6 +179,57 @@ export class BoardService {
     } catch (err) {
       throw new UnauthorizedException("유효하지 않은 토큰입니다.");
     }
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  async updateMemberRole(
+    user: User,
+    id: number,
+    updateMemberDto: UpdateMemberDto,
+  ) {
+    // 보드의 관리자만 권한 변경 가능.
+    const board = await this.getBoardAndRelations(id);
+    const boardMember = board.members.filter(
+      (boardMember) => boardMember.user.id === user.id,
+    );
+    if (boardMember.length === 0 || boardMember[0].role !== "admin") {
+      throw new ForbiddenException("인가되지 않은 권한입니다.");
+    }
+
+    const { memberId, role } = updateMemberDto;
+    const changeMember = board.members.filter(
+      (boardMember) => boardMember.id === memberId,
+    );
+    if (changeMember.length === 0) {
+      throw new NotFoundException("존재하지 않는 멤버입니다.");
+    }
+    await this.boardMemberRepository.update({ id: memberId }, { role });
+
+    return { message: `해당 멤버의 권한이 ${role}(으)로 변경되었습니다.` };
+  }
+
+  async deleteMember(user: User, id: number, deleteMemberDto: DeleteMemberDto) {
+    // 보드의 관리자만 권한 변경 가능.
+    const board = await this.getBoardAndRelations(id);
+    const boardMember = board.members.filter(
+      (boardMember) => boardMember.user.id === user.id,
+    );
+    if (boardMember.length === 0 || boardMember[0].role !== "admin") {
+      throw new ForbiddenException("인가되지 않은 권한입니다.");
+    }
+
+    const { memberId } = deleteMemberDto;
+    const changeMember = board.members.filter(
+      (boardMember) => boardMember.id === memberId,
+    );
+    if (changeMember.length === 0) {
+      throw new NotFoundException("존재하지 않는 멤버입니다.");
+    }
+
+    await this.boardMemberRepository.delete({ id: memberId });
+
+    return { message: "보드에서 해당 멤버가 삭제되었습니다." };
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////

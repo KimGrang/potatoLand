@@ -1,7 +1,7 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Board } from "./board.entity";
 import { User } from "../../user/entity/user.entity";
-import { BoardMemberType } from "../types/boardMember.type";
+import { BoardMemberType } from "src/board/types/boardMember.type";
 import { ApiProperty } from "@nestjs/swagger";
 import { ConfigService } from "@nestjs/config";
 
@@ -12,7 +12,11 @@ const configService = new ConfigService()
   name: "boardmember"
 })
 export class BoardMember {
-  @PrimaryGeneratedColumn()
+  @ApiProperty({
+    example: 1,
+    description: "id",
+  })
+  @PrimaryGeneratedColumn({ type: "int", unsigned: true })
   @ApiProperty({ example: 1, description: "id" })
   id: number;
 
