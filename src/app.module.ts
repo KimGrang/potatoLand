@@ -6,6 +6,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { ColumModule } from "./colum/colum.module";
 import { UserModule } from "./user/user.module";
 import { CardModule } from "./card/card.module";
+import { CommentModule } from "./comment/comment.module";
 import { BoardModule } from "./board/board.module";
 import { AuthModule } from "./auth/auth.module";
 import { RedisModule } from '@nestjs-modules/ioredis';
@@ -30,6 +31,7 @@ import { configModuleValidationSchema } from '../configs/envValidation.config';
     ColumModule,
     UserModule,
     CardModule,
+    CommentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
