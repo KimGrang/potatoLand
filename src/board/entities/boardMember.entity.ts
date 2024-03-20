@@ -6,8 +6,11 @@ import { ApiProperty } from "@nestjs/swagger";
 
 @Entity("boardMember")
 export class BoardMember {
+  @ApiProperty({
+    example: 1,
+    description: "id",
+  })
   @PrimaryGeneratedColumn()
-  @ApiProperty({ example: 1, description: "id" })
   id: number;
 
   @ManyToOne(() => User)
