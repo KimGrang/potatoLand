@@ -10,7 +10,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { BoardVisibility } from "../types/boardVisibility.type";
+import { BoardVisibility } from "../type/boardVisibility.type";
 import {
   IsDate,
   IsEnum,
@@ -21,7 +21,7 @@ import {
 } from "class-validator";
 import { BoardMember } from "./boardMember.entity";
 import { User } from "../../user/entity/user.entity";
-import { InviteOption } from "../types/inviteOption.type";
+import { InviteOption } from "../type/inviteOption.type";
 import { ApiProperty } from "@nestjs/swagger";
 @Entity("board")
 export class Board {

@@ -24,7 +24,7 @@ export class User {
   @Column({ type: "varchar", nullable: false })
   name: string;
 
-  @Column({ type: "varchar" })
+  @Column({ type: "varchar", nullable: true })
   image: string;
 
   @CreateDateColumn()
