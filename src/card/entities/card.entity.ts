@@ -8,8 +8,7 @@ import {
 } from "typeorm";
 import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
-
-// import { Board } from '../board/board.entity';
+import { Working } from "./working.entity";
 import { Comment } from "../../comment/entities/comment.entity";
 
 @Entity("card")
@@ -56,6 +55,6 @@ export class Card {
   @OneToMany(() => Comment, (comment) => comment.card)
   comments: Comment[];
 
-  // @ManyToOne(()=>Worker,(worker)=>worker.cards)
-  // worker:Worker;
+  @OneToMany(() => Working, (working) => working.card)
+  working: Working[];
 }
