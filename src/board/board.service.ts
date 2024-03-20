@@ -40,7 +40,7 @@ export class BoardService {
       description,
       visibility,
       inviteOption,
-      createdBy: user,
+      //createdBy: user,
     });
 
     await this.boardMemberRepository.save({
