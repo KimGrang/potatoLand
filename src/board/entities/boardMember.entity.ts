@@ -3,8 +3,14 @@ import { Board } from "./board.entity";
 import { User } from "../../user/entity/user.entity";
 import { BoardMemberType } from "../types/boardMember.type";
 import { ApiProperty } from "@nestjs/swagger";
+import { ConfigService } from "@nestjs/config";
 
-@Entity("boardMember")
+const configService = new ConfigService()
+
+@Entity({
+  schema: configService.get<string>('DB_NAME'),
+  name: "boardmember"
+})
 export class BoardMember {
   @PrimaryGeneratedColumn()
   @ApiProperty({ example: 1, description: "id" })

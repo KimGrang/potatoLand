@@ -39,3 +39,17 @@
   ##jwt
 
   JWT_SECRET = 
+
+  ##nodemailder
+
+  GMAIL_USER_BOARD =
+
+  GMAIL_PASS_BOARD =
+
+  ##board
+  
+  JWT_SECRET_BOARD =
+
+  ##boardmember entity
+
+  DB_BOARDMEMBER = boardmember

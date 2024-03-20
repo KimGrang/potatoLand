@@ -31,7 +31,7 @@ export class UserService {
   }
 
   async signUp(signupDto : SignUpDto) {
-    if (signupDto.password !== signupDto.comfirmPassword) {
+    if (signupDto.password !== signupDto.confirmPassword) {
       throw new BadRequestException('비밀번호가 일치하지 않습니다.');
     }
     if (await this.findByEmail(signupDto.email)) {

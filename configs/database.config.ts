@@ -3,9 +3,6 @@ import {
   TypeOrmModuleAsyncOptions,
   TypeOrmModuleOptions,
 } from "@nestjs/typeorm";
-import { Board } from "../src/board/entities/board.entity";
-import { BoardMember } from "../src/board/entities/boardMember.entity";
-import { User } from "../src/user/entity/user.entity";
 import { SnakeNamingStrategy } from "typeorm-naming-strategies";
 
 export const typeOrmModuleOptions: TypeOrmModuleAsyncOptions = {
@@ -21,7 +18,6 @@ export const typeOrmModuleOptions: TypeOrmModuleAsyncOptions = {
     username: configService.get<string>("DB_USERNAME"),
     password: configService.get<string>("DB_PASSWORD"),
     database: configService.get<string>("DB_NAME"),
-    entities: [Board, User, BoardMember],
     synchronize: configService.get<boolean>("DB_SYNC"),
     autoLoadEntities: true,
     logging: true,

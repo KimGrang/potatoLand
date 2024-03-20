@@ -3,8 +3,6 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  JoinTable,
-  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -23,6 +21,8 @@ import { BoardMember } from "./boardMember.entity";
 import { User } from "../../user/entity/user.entity";
 import { InviteOption } from "../types/inviteOption.type";
 import { ApiProperty } from "@nestjs/swagger";
+
+
 @Entity("board")
 export class Board {
   /**
