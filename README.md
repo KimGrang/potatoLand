@@ -40,7 +40,7 @@
 
   JWT_SECRET =
 
-  ## nodemailer
+  ##nodemailer
 
   GMAIL_USER =
   GMAIL_PASS =
