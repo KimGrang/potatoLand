@@ -1,5 +1,7 @@
 import { IsNumber, IsNotEmpty, IsString } from "class-validator";
-import { PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, Column, Entity } from "typeorm";
+import { Board } from "src/board/entities/board.entity";
+import { Card } from "src/card/entities/card.entity";
+import { PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, Column, Entity, OneToMany, ManyToOne } from "typeorm";
 
 @Entity('colum')
 export class Colum {
@@ -38,5 +40,11 @@ export class Colum {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @OneToMany(() => Card, card => card.colum)
+  card: Card[]
+
+  @ManyToOne(()=> Board, board => board.colum, {onDelete: 'CASCADE'})
+  board: Board;
   
 }

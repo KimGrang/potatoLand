@@ -21,6 +21,7 @@ import { BoardMember } from "./boardMember.entity";
 import { User } from "../../user/entity/user.entity";
 import { InviteOption } from "../types/inviteOption.type";
 import { ApiProperty } from "@nestjs/swagger";
+import { Colum } from "src/colum/entities/colum.entity";
 
 
 @Entity("board")
@@ -144,4 +145,7 @@ export class Board {
     description: "members",
   })
   members: BoardMember[];
+
+  @OneToMany(()=> Colum, colum => colum.board)
+  colum: Colum[]
 }

@@ -2,12 +2,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
+import { Colum } from "src/colum/entities/colum.entity";
 
 // import { Board } from '../board/board.entity';
 // import { Comment } from '../comment/comment.entity';
@@ -52,6 +54,9 @@ export class Card {
     description: "updatedAt",
   })
   updatedAt: Date;
+
+  @ManyToOne(() => Colum, colum => colum.card, {onDelete: 'CASCADE'})
+  colum: Colum[]
 
   // @OneToMany(()=>Comment,(comment)=>comment.card)
   // comment:Comment[];
