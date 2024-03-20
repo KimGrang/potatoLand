@@ -8,17 +8,19 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from "@nestjs/common";
 import { BoardService } from "./board.service";
 import { CreateBoardDto } from "./dto/createBoard.dto";
-import { Board } from "./entities/board.entity";
 import { User } from "../user/entity/user.entity";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import { UpdateBoardDto } from "./dto/updateBoard.dto";
 import { InviteBoardDto } from "./dto/inviteBoard.dto";
 import { UserInfo } from "src/user/decorator/userInfo.decorator";
+import { AuthGuard } from "@nestjs/passport";
 
 @ApiTags("Board")
+@UseGuards(AuthGuard("jwt"))
 @Controller("board")
 export class BoardController {
   constructor(private readonly boardService: BoardService) {}
