@@ -16,6 +16,7 @@ export class UserController {
   @Post('signup')
   @ApiOperation({ summary: '회원가입 API', description: '회원가입을 진행한다.' })
   async signUp(@Body() signupDto : SignUpDto, @Res() res : Response) {
+    
     return res.status(HttpStatus.CREATED).json({
       message : "이메일 인증을 완료하세요.",
       user : await this.userService.signUp(signupDto)
@@ -25,6 +26,7 @@ export class UserController {
   @Get('email')
   @ApiOperation({ summary: '이메일 인증 API', description: '이메일 인증 코드를 확인한다.' })
   async checkEmail(@Query('emailYn') emailYn : string, @Res() res : Response) {
+    
     return res.status(HttpStatus.CREATED).json({
       message : "이메일 인증이 완료되었습니다.",
       user : await this.userService.checkEmail(emailYn)
@@ -41,14 +43,16 @@ export class UserController {
     })
   }
 
-  @Put('profile')
-  @ApiOperation({ summary: '프로필 API', description: '프로필을 수정한다.' })
-  async profile(@Body() profileDto : ProfileDto, @Res() res : Response) { 
+  // @UseGuards(RolesGuard)
+  // @Put('profile')
+  // @ApiOperation({ summary: '프로필 API', description: '프로필을 수정한다.' })
+  // async profile(@UserInfo() user : User, @Body() profileDto : ProfileDto, @Res() res : Response) { 
     
-    return res.status(HttpStatus.OK).json({
-      message : "프로필을 수정했습니다."
-    })
-  }
+  //   return res.status(HttpStatus.OK).json({
+  //     message : "프로필을 수정했습니다.",
+  //     user : await this.userService.profile(user, profileDto)
+  //   })
+  // }
 
   @UseGuards(RolesGuard)
   @Post('test')

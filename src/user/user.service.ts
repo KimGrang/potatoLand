@@ -12,6 +12,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { ConfigService } from '@nestjs/config';
 import { Redis } from 'ioredis';
 import { InjectRedis } from '@nestjs-modules/ioredis';
+import { ProfileDto } from './dto/profile.dto';
 
 @Injectable()
 export class UserService {
@@ -20,8 +21,8 @@ export class UserService {
     private readonly userRepository : Repository<User>,
     private readonly jwtService : JwtService,
     private readonly configService: ConfigService,
-    @InjectRedis()
-    private readonly redisClient: Redis,
+    // @InjectRedis()
+    // private readonly redisClient: Redis,
   ) {}
 
   async findByEmail(email : string) {
@@ -75,12 +76,12 @@ export class UserService {
     const payload = {email : signinDto.email, sub : user.id};
 
     const accessToken = this.jwtService.sign(payload);
-    const refreshToken = this.jwtService.sign(payload, {
-      secret : this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
-      expiresIn : '604800s'
-    });
+    // const refreshToken = this.jwtService.sign(payload, {
+    //   secret : this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
+    //   expiresIn : '604800s'
+    // });
 
-    await this.redisClient.set(user.id.toString(), refreshToken, 'EX', '604800'); //EX 옵션을 사용하여 TTL(Time To Live)을 설정, 초단위, 7일
+    // await this.redisClient.set(user.id.toString(), refreshToken, 'EX', '604800'); //EX 옵션을 사용하여 TTL(Time To Live)을 설정, 초단위, 7일
     return accessToken;
   }
 
