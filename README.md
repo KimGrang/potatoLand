@@ -38,4 +38,13 @@
 
   ##jwt
 
-  JWT_SECRET = 
+  JWT_SECRET =
+
+  ## nodemailer
+
+  GMAIL_USER =
+  GMAIL_PASS =
+
+  GMAIL_USER_BOARD =
+  GMAIL_PASS_BOARD =
+  JWT_SECRET_BOARD =
