@@ -10,6 +10,8 @@ import { SignInDto } from './dto/signin.dto';
 import * as nodemailer from 'nodemailer'; 
 import { v4 as uuidv4 } from 'uuid';
 import { ConfigService } from '@nestjs/config';
+import { Redis } from 'ioredis';
+import { InjectRedis } from '@nestjs-modules/ioredis';
 
 @Injectable()
 export class UserService {
@@ -17,7 +19,9 @@ export class UserService {
     @InjectRepository(User) 
     private readonly userRepository : Repository<User>,
     private readonly jwtService : JwtService,
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
+    @InjectRedis()
+    private readonly redisClient: Redis,
   ) {}
 
   async findByEmail(email : string) {
@@ -26,7 +30,7 @@ export class UserService {
 
   async checkEmail(uuid : string) {
     const user = await this.userRepository.findOneBy({emailYnCode : uuid});
-    user.emailYnCode = 'T';
+    user.emailYn = 'T';
     await this.userRepository.save(user);
   }
 
@@ -52,7 +56,7 @@ export class UserService {
     return user;
   }
 
-  async signIn(signinDto : SignInDto) : Promise<string> {
+  async signIn(signinDto : SignInDto) {
     const user = await this.userRepository.findOne({
       select : ['id', 'email', 'password'],
       where : {email : signinDto.email}
@@ -61,7 +65,7 @@ export class UserService {
     if (_.isNull(user)) {
       throw new UnauthorizedException('이메일을 확인하세요.');
     }
-    if (user.emailYnCode === 'F') {
+    if (user.emailYn === 'F') {
       throw new UnauthorizedException('이메일 인증을 완료하세요');
     }
     if (!(await compare(signinDto.password, user.password))) {
@@ -69,14 +73,19 @@ export class UserService {
     }
 
     const payload = {email : signinDto.email, sub : user.id};
-    const accessToken = this.jwtService.sign(payload, {expiresIn : '10m'});
-  
-    return accessToken ;
+
+    const accessToken = this.jwtService.sign(payload);
+    const refreshToken = this.jwtService.sign(payload, {
+      secret : this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
+      expiresIn : '604800s'
+    });
+
+    await this.redisClient.set(user.id.toString(), refreshToken, 'EX', '604800'); //EX 옵션을 사용하여 TTL(Time To Live)을 설정, 초단위, 7일
+    return accessToken;
   }
 
   private async sendConfirmationEmail(email: string, uuid : string): Promise<void> {
     const transporter = nodemailer.createTransport({
-
       service: 'Gmail',
       auth: {
         user: this.configService.get<string>('GMAIL_USER'),
@@ -88,9 +97,7 @@ export class UserService {
       from: this.configService.get<string>('GMAIL_USER'),
       to: email,
       subject: '이메일 인증',
-      html: `
-      <a href="http://localhost:3000/api/users/email?emailYn=${uuid}">이메일 인증</a>
-  `
+      html: `<a href="http://localhost:3000/api/users/email?emailYn=${uuid}">이메일 인증</a>`
     });
   }
 }

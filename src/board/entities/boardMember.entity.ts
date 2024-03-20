@@ -1,14 +1,14 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Board } from "./board.entity";
 import { User } from "../../user/entity/user.entity";
-import { BoardMemberType } from "../types/boardMember.type";
+import { BoardMemberType } from "src/board/types/boardMember.type";
 import { ApiProperty } from "@nestjs/swagger";
 
 @Entity("boardMember")
 export class BoardMember {
   @PrimaryGeneratedColumn()
   @ApiProperty({ example: 1, description: "id" })
-  id: number;
+  id: number;      
 
   @ManyToOne(() => User)
   @ApiProperty({
