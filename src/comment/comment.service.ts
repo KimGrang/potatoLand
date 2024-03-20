@@ -1,9 +1,9 @@
 // comment.service.ts
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Comment } from './entities/comment.entity';
-import { CreateCommentDto, UpdateCommentDto } from './dto/comment.dto';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { Comment } from "./entities/comment.entity";
+import { CreateCommentDto, UpdateCommentDto } from "./dto/comment.dto";
 
 @Injectable()
 export class CommentService {
@@ -13,21 +13,20 @@ export class CommentService {
   ) {}
 
   /**
-   * Create a new comment for a card.
-   * @param {number} cardId - ID of the card to which the comment belongs.
-   * @param {number} userId - The ID of the user making request.
-   * @param {CreateCommentDto} createCommentDto - Data for creating a comment.
-   * @returns {Promise<Comment>} - The created comment.
+   * 댓글 생성
+   * @param {number} cardId - 댓글이 달릴 cardId
+   * @param {CreateCommentDto} createCommentDto - 생성될 댓글 내용
+   * @returns {Promise<Comment>} - return 생성된 댓글
    */
+  //  * @param {number} userId - 작성자 (request userId)
   async createComment(
-    // cardId: number,
+    cardId: number,
     // userId: number,
     createCommentDto: CreateCommentDto,
   ): Promise<Comment> {
-    // Create a new comment
     const comment = this.commentRepository.create({
       comment: createCommentDto.comment,
-      // card: { id: cardId },
+      card: { id: cardId },
       // author: { id: userId },
     });
 
@@ -35,11 +34,11 @@ export class CommentService {
   }
 
   /**
-   * Update a comment.
-   * @param {number} commentId - ID of the comment to update.
-   * @param {UpdateCommentDto} updateCommentDto - Updated comment data.
-   * @returns {Promise<Comment>} - The updated comment.
-   * @throws {NotFoundException} - If the comment with specified ID is not found.
+   * 댓글 수정
+   * @param {number} commentId - 수정할 commentId
+   * @param {UpdateCommentDto} updateCommentDto - 댓글 수정 Dto
+   * @returns {Promise<Comment>} - return 댓글 수정 내용
+   * @throws {NotFoundException} - 해당 Id의 댓글이 없을 경우
    */
   async updateComment(
     commentId: number,
@@ -52,7 +51,7 @@ export class CommentService {
     });
 
     if (!comment) {
-      throw new NotFoundException('Comment not found');
+      throw new NotFoundException("Comment not found");
     }
 
     comment.comment = updateCommentDto.comment;
@@ -61,10 +60,10 @@ export class CommentService {
   }
 
   /**
-   * Delete a comment.
-   * @param {number} commentId - ID of the comment to delete.
+   * 댓글 삭제
+   * @param {number} commentId - 삭제할 commentId
    * @returns {Promise<void>}
-   * @throws {NotFoundException} - If the comment with specified ID is not found.
+   * @throws {NotFoundException} - 해당 Id의 댓글이 없을 경우
    */
   async deleteComment(commentId: number): Promise<void> {
     await this.commentRepository.delete(commentId);

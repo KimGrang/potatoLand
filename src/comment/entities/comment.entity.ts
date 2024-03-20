@@ -5,8 +5,8 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from 'typeorm';
-// import { Card } from '../card/card.entity';
+} from "typeorm";
+import { Card } from "../../card/entities/card.entity";
 // import { User } from '../auth/user.entity';
 
 @Entity()
@@ -20,8 +20,8 @@ export class Comment {
   // @ManyToOne(() => User)
   // author: User;
 
-  // @ManyToOne(() => Card, (card) => card.comments)
-  // card: Card;
+  @ManyToOne(() => Card, (card) => card.comments)
+  card: Card;
 
   @CreateDateColumn()
   createdAt: Date;
