@@ -94,7 +94,7 @@ export class Board {
     example: {
       email: "aaa@aaa.com",
       id: 1,
-      role: "admin",
+      name: "aaa",
     },
     description: "createdBy",
   })
@@ -129,8 +129,7 @@ export class Board {
         role: "admin",
         user: {
           id: 1,
-          email: "tntncodus@naver.com",
-          role: "",
+          email: "aaa@aaa.com",
         },
       },
       {
@@ -138,8 +137,7 @@ export class Board {
         role: "member",
         user: {
           id: 2,
-          email: "su91582710@gmail.com",
-          role: "",
+          email: "bbb@bbb.com",
         },
       },
     ],

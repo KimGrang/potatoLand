@@ -9,6 +9,7 @@ import { ColumModule } from "./colum/colum.module";
 import { UserModule } from "./user/user.module";
 import { CardModule } from "./card/card.module";
 import { BoardModule } from "./board/board.module";
+import { AuthModule } from "./auth/auth.module";
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { BoardModule } from "./board/board.module";
       validationSchema: configModuleValidationSchema,
     }),
     TypeOrmModule.forRootAsync(typeOrmModuleOptions),
+    AuthModule,
     BoardModule,
     ColumModule,
     UserModule,

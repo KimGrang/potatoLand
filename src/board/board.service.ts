@@ -40,16 +40,15 @@ export class BoardService {
       description,
       visibility,
       inviteOption,
-      createdBy: user,
+      //createdBy: user,
     });
 
-    if (!_.isNil(user)) {
-      await this.boardMemberRepository.save({
-        board: newBoard,
-        user,
-        role: BoardMemberType.ADMIN,
-      });
-    }
+    await this.boardMemberRepository.save({
+      board: newBoard,
+      user,
+      role: BoardMemberType.ADMIN,
+    });
+
     return newBoard;
   }
 
@@ -101,16 +100,35 @@ export class BoardService {
     const boardMember = board.members.filter(
       (boardMember) => boardMember.user.id === user.id,
     );
-
+    const memberRole = boardMember[0].role;
     // 보드의 inviteOption이 all이면 보드의 멤버 누구나 초대 가능, adminOnly면 보드의 관리자만 초대 가능
     if (
       boardMember.length === 0 ||
-      (board.inviteOption === "adminOnly" && boardMember[0].role !== "admin")
+      (board.inviteOption === "adminOnly" && memberRole !== "admin")
     ) {
       throw new ForbiddenException("인가되지 않은 권한입니다.");
     }
 
-    const { userId, role, expiresIn } = inviteBoardDto;
+    let { userId, expiresIn, role } = inviteBoardDto;
+    if (memberRole === "member" && role === "admin") {
+      throw new ForbiddenException(
+        `'member'는 member, guest, observer만 초대할 수 있습니다.`,
+      );
+    } else if (
+      memberRole === "guest" &&
+      (role === "admin" || role === "member")
+    ) {
+      throw new ForbiddenException(
+        `'guest'는 guest, observer만 초대할 수 있습니다.`,
+      );
+    } else if (memberRole === "observer" && role !== "observer") {
+      throw new ForbiddenException(
+        `'observer'는 observer만 초대할 수 있습니다.`,
+      );
+    }
+    if (_.isNil(role)) {
+      role = memberRole;
+    }
     const payload = { userId, role, boardId: id };
     const token = this.jwtService.sign(payload, { expiresIn: `${expiresIn}h` });
     const inviteLink = `http://localhost:3000/api/board/confirm?token=${token}`;
