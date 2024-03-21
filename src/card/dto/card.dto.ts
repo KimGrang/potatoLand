@@ -6,7 +6,7 @@ import {
   IsArray,
 } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
-// import { Comment } from "../comment/entities/comment.entity";
+import { Comment } from "../../comment/entities/comment.entity";
 
 export class CreateCardDto {
   @ApiProperty({ example: 1, description: "cardOrder" })
@@ -53,6 +53,8 @@ export class CardDetailsDto {
   color: string;
   @ApiProperty({ example: 1, description: "id", required: true })
   id: number;
+  // @ApiProperty({ example: ["펩시","제로","라임"], description: "id", required: true })
+  comments: Comment[];
   @ApiProperty({
     example: "2024-03-19 06:14:10.769099",
     description: "createdAt",

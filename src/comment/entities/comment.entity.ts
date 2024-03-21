@@ -9,7 +9,7 @@ import {
 import { Card } from "../../card/entities/card.entity";
 // import { User } from '../auth/user.entity';
 
-@Entity()
+@Entity("comment")
 export class Comment {
   @PrimaryGeneratedColumn()
   id: number;

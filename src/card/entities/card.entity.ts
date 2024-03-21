@@ -10,8 +10,7 @@ import {
 import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 import { Colum } from "src/colum/entities/colum.entity";
-
-// import { Board } from '../board/board.entity';
+import { Working } from "./working.entity";
 import { Comment } from "../../comment/entities/comment.entity";
 
 @Entity("card")
@@ -62,4 +61,6 @@ export class Card {
   @OneToMany(() => Comment, (comment) => comment.card)
   comments: Comment[];
 
+  @OneToMany(() => Working, (working) => working.card)
+  working: Working[];
 }
