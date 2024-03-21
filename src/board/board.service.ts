@@ -1,7 +1,6 @@
 import {
   BadRequestException,
   ForbiddenException,
-  Inject,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -21,8 +20,6 @@ import { ConfigService } from "@nestjs/config";
 import * as nodemailer from "nodemailer";
 import { UpdateMemberDto } from "./dto/updateMember.dto";
 import { DeleteMemberDto } from "./dto/deleteMember.dto";
-import { Cache } from "cache-manager";
-import { CACHE_MANAGER } from "@nestjs/cache-manager";
 
 @Injectable()
 export class BoardService {
@@ -35,7 +32,6 @@ export class BoardService {
     private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
-    //@Inject(CACHE_MANAGER) private cacheService: Cache,
   ) {}
 
   async createBoard(user: User, createBoardDto: CreateBoardDto) {
@@ -250,25 +246,8 @@ export class BoardService {
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+  
   async getBoardAndRelations(id: number) {
-    // let board = await this.cacheService.get<Board>(`board:${id}`);
-    // if (_.isNil(board)) {
-    //   board = await this.boardRepository
-    //     .createQueryBuilder("board")
-    //     .leftJoinAndSelect("board.createdBy", "createdBy")
-    //     .leftJoinAndSelect("board.members", "members")
-    //     .leftJoinAndSelect("members.user", "user")
-    //     .where("board.id = :id", { id })
-    //     .getOne();
-
-    //   if (_.isNil(board)) {
-    //     throw new NotFoundException(
-    //       "해당 요청에 필요한 결과를 찾을 수 없습니다.",
-    //     );
-    //   }
-    //   await this.cacheService.set(`board:${id}`, board);
-    // }
 
     const board = await this.boardRepository
       .createQueryBuilder("board")

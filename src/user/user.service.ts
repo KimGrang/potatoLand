@@ -21,8 +21,8 @@ export class UserService {
     private readonly userRepository : Repository<User>,
     private readonly jwtService : JwtService,
     private readonly configService: ConfigService,
-    // @InjectRedis()
-    // private readonly redisClient: Redis,
+    @InjectRedis()
+    private readonly redisClient: Redis,
   ) {}
 
   async findByEmail(email : string) {
@@ -36,7 +36,7 @@ export class UserService {
   }
 
   async signUp(signupDto : SignUpDto) {
-    if (signupDto.password !== signupDto.comfirmPassword) {
+    if (signupDto.password !== signupDto.confirmPassword) {
       throw new BadRequestException('비밀번호가 일치하지 않습니다.');
     }
     if (await this.findByEmail(signupDto.email)) {
@@ -76,12 +76,14 @@ export class UserService {
     const payload = {email : signinDto.email, sub : user.id};
 
     const accessToken = this.jwtService.sign(payload);
-    // const refreshToken = this.jwtService.sign(payload, {
-    //   secret : this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
-    //   expiresIn : '604800s'
-    // });
+    const refreshToken = this.jwtService.sign(payload, {
+      secret : this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
+      expiresIn : '604800s'
+    });
+    
+    await this.redisClient.set(user.id.toString(), refreshToken, 'EX', '604800'); 
 
-    // await this.redisClient.set(user.id.toString(), refreshToken, 'EX', '604800'); //EX 옵션을 사용하여 TTL(Time To Live)을 설정, 초단위, 7일
+    //EX 옵션을 사용하여 TTL(Time To Live)을 설정, 초단위, 7일
     return accessToken;
   }
 

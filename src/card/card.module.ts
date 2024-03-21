@@ -5,9 +5,11 @@ import { Working } from "./entities/working.entity";
 import { UserModule } from "../user/user.module";
 import { CardService } from "./card.service";
 import { CardController } from "./card.controller";
+import { Colum } from "../colum/entities/colum.entity";
+import { Board } from "../board/entities/board.entity";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Card, Working]), UserModule],
+  imports: [TypeOrmModule.forFeature([Card, Colum, Board, Working]), UserModule],
   controllers: [CardController],
   providers: [CardService],
 })

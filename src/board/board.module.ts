@@ -9,17 +9,17 @@ import { ConfigService } from "@nestjs/config";
 import { User } from "../user/entity/user.entity";
 import { CacheModule } from "@nestjs/cache-manager";
 import { cacheModuleOptions } from "../../configs/cache.config";
+import { Colum } from "../colum/entities/colum.entity";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Board, BoardMember, User]),
+    TypeOrmModule.forFeature([Board, BoardMember, User, Colum]),
     JwtModule.registerAsync({
       useFactory: (config: ConfigService) => ({
         secret: config.get<string>("JWT_SECRET_BOARD"),
       }),
       inject: [ConfigService],
     }),
-    CacheModule.registerAsync(cacheModuleOptions),
   ],
   controllers: [BoardController],
   providers: [BoardService],
