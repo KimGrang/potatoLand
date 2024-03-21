@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -42,7 +43,7 @@ export class BoardService {
       description,
       visibility,
       inviteOption,
-      //createdBy: user,
+      createdBy: user,
     });
 
     await this.boardMemberRepository.save({
@@ -112,6 +113,14 @@ export class BoardService {
     }
 
     let { userId, expiresIn, role } = inviteBoardDto;
+
+    const isExist = board.members.filter(
+      (boardMember) => boardMember.user.id === userId,
+    );
+    if (isExist.length !== 0) {
+      throw new BadRequestException("이미 초대된 사용자입니다.");
+    }
+
     if (memberRole === "member" && role === "admin") {
       throw new ForbiddenException(
         `'member'는 member, guest, observer만 초대할 수 있습니다.`,

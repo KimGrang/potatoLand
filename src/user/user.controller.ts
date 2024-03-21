@@ -43,16 +43,16 @@ export class UserController {
     })
   }
 
-  @UseGuards(RolesGuard)
-  @Put('profile')
-  @ApiOperation({ summary: '프로필 API', description: '프로필을 수정한다.' })
-  async profile(@UserInfo() user : User, @Body() profileDto : ProfileDto, @Res() res : Response) { 
+  // @UseGuards(RolesGuard)
+  // @Put('profile')
+  // @ApiOperation({ summary: '프로필 API', description: '프로필을 수정한다.' })
+  // async profile(@UserInfo() user : User, @Body() profileDto : ProfileDto, @Res() res : Response) { 
     
-    return res.status(HttpStatus.OK).json({
-      message : "프로필을 수정했습니다.",
-      user : await this.userService.profile(user, profileDto)
-    })
-  }
+  //   return res.status(HttpStatus.OK).json({
+  //     message : "프로필을 수정했습니다.",
+  //     user : await this.userService.profile(user, profileDto)
+  //   })
+  // }
 
   @UseGuards(RolesGuard)
   @Post('test')

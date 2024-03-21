@@ -1,7 +1,7 @@
-import { IsNumber, IsNotEmpty, IsString } from "class-validator";
+import { IsNumber, IsNotEmpty, IsString, IsInt } from "class-validator";
 import { Board } from "src/board/entities/board.entity";
 import { Card } from "src/card/entities/card.entity";
-import { PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, Column, Entity, OneToMany, ManyToOne } from "typeorm";
+import { PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, Column, Entity, OneToMany, ManyToOne, JoinColumn } from "typeorm";
 
 @Entity('colum')
 export class Colum {
@@ -12,10 +12,6 @@ export class Colum {
    */
   @PrimaryGeneratedColumn({ type: "int", unsigned: true })
   id: number;
-
-  @IsNumber()
-  @Column({default: 0})
-  boardId: number;
 
   /**
    * 컬럼 번호
@@ -45,6 +41,7 @@ export class Colum {
   card: Card[]
 
   @ManyToOne(()=> Board, board => board.colum, {onDelete: 'CASCADE'})
-  board: Board;
-  
+  @JoinColumn({name: 'board_id', referencedColumnName: 'id'})
+  board: Board | null;
 }
+

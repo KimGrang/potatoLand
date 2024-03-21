@@ -30,18 +30,25 @@ export class ColumService {
 
   //컬럼 이름 수정
   async update(updateColumDto: UpdateColumDto) {
-    const {boardId, title} = updateColumDto
+    const {boardId, id, title} = updateColumDto
     const existedColum = await this.columRepository.findOne({
-      where:{
-        boardId, title
+      relations: {
+        board: true
+      },
+      where: {
+        board: {
+          id: boardId,
+        },
+        title
       }
+
     })
     if(existedColum) {
       throw new BadRequestException('유효하지 않은 요청입니다.')
     }
     
     
-    return await this.columRepository.update({boardId}, {title})
+    return await this.columRepository.update({id}, {title})
   }
   //컬럼 삭제
   async remove(id: number) {

@@ -21,8 +21,8 @@ export class UserService {
     private readonly userRepository : Repository<User>,
     private readonly jwtService : JwtService,
     private readonly configService: ConfigService,
-    // @InjectRedis()
-    // private readonly redisClient: Redis,
+    @InjectRedis()
+    private readonly redisClient: Redis,
   ) {}
 
   async findByEmail(email : string) {
@@ -80,8 +80,10 @@ export class UserService {
       secret : this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
       expiresIn : '604800s'
     });
-
-    await this.redisClient.set(user.id.toString(), refreshToken, 'EX', '604800'); //EX 옵션을 사용하여 TTL(Time To Live)을 설정, 초단위, 7일
+    console.log('this.redisClient?', this.redisClient)
+    const log = await this.redisClient.set(user.id.toString(), refreshToken, 'EX', '604800'); 
+    console.log('log?', log)
+    //EX 옵션을 사용하여 TTL(Time To Live)을 설정, 초단위, 7일
     return accessToken;
   }
 

@@ -20,12 +20,11 @@ import { configModuleValidationSchema } from '../configs/envValidation.config';
       validationSchema: configModuleValidationSchema,
     }),
     TypeOrmModule.forRootAsync(typeOrmModuleOptions),
-    // RedisModule.forRootAsync({
-    //   useFactory: () => ({
-    //     type: 'single',
-    //     url: process.env.REDIS_URL,
-    //   }),
-    // }),
+    RedisModule.forRootAsync({
+      useFactory: () => ({
+        type: 'single',
+      }),
+    }),
     AuthModule,
     BoardModule,
     ColumModule,

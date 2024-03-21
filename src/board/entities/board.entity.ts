@@ -31,7 +31,7 @@ export class Board {
    * @example 1
    */
   @IsInt()
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: "int", unsigned: true })
   id: number;
 
   /**

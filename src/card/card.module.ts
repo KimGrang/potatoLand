@@ -4,9 +4,10 @@ import { Card } from "./entities/card.entity";
 import { CardService } from "./card.service";
 import { CardController } from "./card.controller";
 import { Colum } from "../colum/entities/colum.entity";
+import { Board } from "../board/entities/board.entity";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Card, Colum])],
+  imports: [TypeOrmModule.forFeature([Card, Colum, Board])],
   controllers: [CardController],
   providers: [CardService],
 })
