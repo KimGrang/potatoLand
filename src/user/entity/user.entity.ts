@@ -17,6 +17,10 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
+  /**
+   * 이메일
+   * @example "gookbab99@gmail.com"
+   */
   @IsNotEmpty({message: '이메일을 입력해 주세요.'})
   @IsString()
   @Column({ type: "varchar", unique: true, nullable: false })
@@ -35,11 +39,19 @@ export class User {
   @Column({ type: "varchar", select: true, nullable: false })
   password: string;
 
+   /**
+   * 이름
+   * @example "국밥"
+   */
   @IsNotEmpty({ message: "이름을 입력해 주세요." }) 
   @IsString() 
   @Column({ type: "varchar", nullable: false })
   name: string;
 
+  /**
+   * 사용자 프로필 이미지
+   * @example https://cdn.ulsanpress.net/news/photo/202108/382677_166224_2914.jpg
+   */
   @Column({ type: "varchar", nullable: true })
   image: string;
 
