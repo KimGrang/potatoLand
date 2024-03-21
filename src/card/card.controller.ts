@@ -57,6 +57,26 @@ export class CardController {
     return { message: "카드가 성공적으로 수정되었습니다.", data: updatedCard };
   }
 
+  @ApiOperation({ summary: "Assign a card to a user" })
+  @Post(":id/createWorking/:userId")
+  async assignCardToUser(
+    @Param("id") cardId: number,
+    @Param("userId") userId: number,
+  ) {
+    await this.cardService.createCardWorker_(cardId, userId);
+    return { message: "카드에 작업자 할당 완료" };
+  }
+
+  @ApiOperation({ summary: "Unassign a card from a user" })
+  @Delete(":id/removeWorking/:userId")
+  async unassignCardFromUser(
+    @Param("id") cardId: number,
+    @Param("userId") userId: number,
+  ) {
+    await this.cardService.removeCardWorker_(cardId, userId);
+    return { message: "카드에서 작업자 제거 완료" };
+  }
+
   @ApiOperation({ summary: "카드 삭제" })
   @Delete(":id")
   async deleteCard(@Param("id") cardId: number) {
