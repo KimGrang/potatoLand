@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ForbiddenException,
+  Inject,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -20,6 +21,8 @@ import { ConfigService } from "@nestjs/config";
 import * as nodemailer from "nodemailer";
 import { UpdateMemberDto } from "./dto/updateMember.dto";
 import { DeleteMemberDto } from "./dto/deleteMember.dto";
+import { Cache } from "cache-manager";
+import { CACHE_MANAGER } from "@nestjs/cache-manager";
 
 @Injectable()
 export class BoardService {
@@ -32,6 +35,7 @@ export class BoardService {
     private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    @Inject(CACHE_MANAGER) private cacheService: Cache,
   ) {}
 
   async createBoard(user: User, createBoardDto: CreateBoardDto) {
@@ -236,6 +240,10 @@ export class BoardService {
       throw new NotFoundException("존재하지 않는 멤버입니다.");
     }
 
+    if (changeMember[0].role === "admin") {
+      throw new ForbiddenException("보드의 관리자를 삭제할 수 없습니다.");
+    }
+
     await this.boardMemberRepository.delete({ id: memberId });
 
     return { message: "보드에서 해당 멤버가 삭제되었습니다." };
@@ -244,19 +252,24 @@ export class BoardService {
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   async getBoardAndRelations(id: number) {
-    const board = await this.boardRepository
-      .createQueryBuilder("board")
-      .leftJoinAndSelect("board.createdBy", "createdBy")
-      .leftJoinAndSelect("board.members", "members")
-      .leftJoinAndSelect("members.user", "user")
-      .where("board.id = :id", { id })
-      .getOne();
-
+    let board = await this.cacheService.get<Board>(`board:${id}`);
     if (_.isNil(board)) {
-      throw new NotFoundException(
-        "해당 요청에 필요한 결과를 찾을 수 없습니다.",
-      );
-    }
+      board = await this.boardRepository
+        .createQueryBuilder("board")
+        .leftJoinAndSelect("board.createdBy", "createdBy")
+        .leftJoinAndSelect("board.members", "members")
+        .leftJoinAndSelect("members.user", "user")
+        .where("board.id = :id", { id })
+        .getOne();
+
+      if (_.isNil(board)) {
+        throw new NotFoundException(
+          "해당 요청에 필요한 결과를 찾을 수 없습니다.",
+        );
+      }
+      await this.cacheService.set(`board:${id}`, board);
+    } 
+
     return board;
   }
 }
