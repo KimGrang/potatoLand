@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -56,7 +57,12 @@ export class Card {
 
 
   @ManyToOne(() => Colum, colum => colum.card, {onDelete: 'CASCADE'})
-  colum: Colum[]
+  @JoinColumn({name: 'colum_id', referencedColumnName: 'id'})
+  colum: Colum
+
+  @IsNumber()
+  @Column({unsigned: true})
+  colum_id: number;
 
   @OneToMany(() => Comment, (comment) => comment.card)
   comments: Comment[];

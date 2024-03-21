@@ -1,13 +1,17 @@
-import { Controller, Post, Body, Patch, Delete, HttpStatus, UseInterceptors } from '@nestjs/common';
+
+import { Controller, Post, Body, Patch, Delete, HttpStatus, UseInterceptors, UseGuards } from '@nestjs/common';
 import { ColumService } from './colum.service';
 import { CreateColumDto } from './dto/createColum.dto';
 import { UpdateColumDto } from './dto/updateColum.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { RemoveColumDto } from './dto/removeColum.dto';
 import { ReorderColumDto } from './dto/reorderColum.dto';
+import { RolesGuard } from '../auth/roles.guard';
 import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 
+
 @ApiTags('컬럼')
+@UseGuards(RolesGuard)
 @Controller('colum')
 @UseInterceptors(CacheInterceptor)
 @CacheTTL(30)
@@ -65,8 +69,7 @@ export class ColumController {
    */
   @Patch('reorder')
   async reorderColum(@Body() reorderColumDto:ReorderColumDto) {
-    const {columIds} = reorderColumDto
-    const data = await this.columService.reorderColum(columIds)
+    const data = await this.columService.reorderColum(reorderColumDto)
     
     return {
       statusCode: HttpStatus.OK,

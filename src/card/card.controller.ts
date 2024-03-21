@@ -29,7 +29,7 @@ export class CardController {
 
   @ApiOperation({ summary: "모든 카드 정보 확인" })
   @Get()
-  async getCard() {
+  async getCards() {
     const cards = await this.cardService.getCards();
     return { message: "모든 카드 정보.", data: { cards } };
   }
