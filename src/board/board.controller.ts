@@ -19,10 +19,10 @@ import { InviteBoardDto } from "./dto/inviteBoard.dto";
 import { UserInfo } from "src/user/decorator/userInfo.decorator";
 import { UpdateMemberDto } from "./dto/updateMember.dto";
 import { DeleteMemberDto } from "./dto/deleteMember.dto";
-import { AuthGuard } from "@nestjs/passport";
+import { RolesGuard } from "../auth/roles.guard";
 
 @ApiTags("Board")
-@UseGuards(AuthGuard("jwt"))
+@UseGuards(RolesGuard)
 @Controller("board")
 export class BoardController {
   constructor(private readonly boardService: BoardService) {}
@@ -33,7 +33,6 @@ export class BoardController {
     @UserInfo() user: User,
     @Body() createBoardDto: CreateBoardDto,
   ) {
-    console.log("테스트: ", user);
     const board = await this.boardService.createBoard(user, createBoardDto);
     return {
       statusCode: HttpStatus.CREATED,
