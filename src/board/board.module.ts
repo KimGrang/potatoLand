@@ -7,6 +7,8 @@ import { BoardMember } from "./entities/boardMember.entity";
 import { JwtModule } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import { User } from "../user/entity/user.entity";
+import { CacheModule } from "@nestjs/cache-manager";
+import { cacheModuleOptions } from "../../configs/cache.config";
 import { Colum } from "../colum/entities/colum.entity";
 
 @Module({
@@ -18,6 +20,7 @@ import { Colum } from "../colum/entities/colum.entity";
       }),
       inject: [ConfigService],
     }),
+    CacheModule.registerAsync(cacheModuleOptions),
   ],
   controllers: [BoardController],
   providers: [BoardService],
