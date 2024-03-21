@@ -9,6 +9,7 @@ import {
   Post,
   Query,
   UseGuards,
+  UseInterceptors,
 } from "@nestjs/common";
 import { BoardService } from "./board.service";
 import { CreateBoardDto } from "./dto/createBoard.dto";
@@ -20,10 +21,13 @@ import { UserInfo } from "src/user/decorator/userInfo.decorator";
 import { UpdateMemberDto } from "./dto/updateMember.dto";
 import { DeleteMemberDto } from "./dto/deleteMember.dto";
 import { RolesGuard } from "../auth/roles.guard";
+import { CacheInterceptor, CacheTTL } from "@nestjs/cache-manager";
 
 @ApiTags("Board")
 @UseGuards(RolesGuard)
 @Controller("board")
+@UseInterceptors(CacheInterceptor)
+@CacheTTL(30)
 export class BoardController {
   constructor(private readonly boardService: BoardService) {}
 
