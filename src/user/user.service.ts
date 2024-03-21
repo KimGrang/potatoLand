@@ -80,9 +80,9 @@ export class UserService {
       secret : this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
       expiresIn : '604800s'
     });
-    console.log('this.redisClient?', this.redisClient)
-    const log = await this.redisClient.set(user.id.toString(), refreshToken, 'EX', '604800'); 
-    console.log('log?', log)
+    
+    await this.redisClient.set(user.id.toString(), refreshToken, 'EX', '604800'); 
+
     //EX 옵션을 사용하여 TTL(Time To Live)을 설정, 초단위, 7일
     return accessToken;
   }

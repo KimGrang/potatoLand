@@ -9,7 +9,7 @@ import { CardModule } from "./card/card.module";
 import { CommentModule } from "./comment/comment.module";
 import { BoardModule } from "./board/board.module";
 import { AuthModule } from "./auth/auth.module";
-// import { RedisModule } from '@nestjs-modules/ioredis';
+import { RedisModule } from '@nestjs-modules/ioredis';
 import { typeOrmModuleOptions } from "../configs/database.config";
 import { configModuleValidationSchema } from "../configs/envValidation.config";
 
