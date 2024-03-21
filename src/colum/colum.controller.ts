@@ -1,12 +1,14 @@
-import { Controller, Post, Body, Patch, Delete, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Body, Patch, Delete, HttpStatus, UseGuards } from '@nestjs/common';
 import { ColumService } from './colum.service';
 import { CreateColumDto } from './dto/createColum.dto';
 import { UpdateColumDto } from './dto/updateColum.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { RemoveColumDto } from './dto/removeColum.dto';
 import { ReorderColumDto } from './dto/reorderColum.dto';
+import { RolesGuard } from '../auth/roles.guard';
 
 @ApiTags('컬럼')
+@UseGuards(RolesGuard)
 @Controller('colum')
 export class ColumController {
   constructor(private readonly columService: ColumService) {}
@@ -62,8 +64,7 @@ export class ColumController {
    */
   @Patch('reorder')
   async reorderColum(@Body() reorderColumDto:ReorderColumDto) {
-    const {columIds} = reorderColumDto
-    const data = await this.columService.reorderColum(columIds)
+    const data = await this.columService.reorderColum(reorderColumDto)
     
     return {
       statusCode: HttpStatus.OK,

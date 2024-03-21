@@ -28,9 +28,10 @@ export class CardService {
   ) {}
 
   async createCard(createCardDto: CreateCardDto) {
-    const { cardOrder, title, desc, color } = createCardDto;
+    const { cardOrder, colum_id, title, desc, color } = createCardDto;
 
     const newCard = this.cardRepository.create({
+      colum_id,
       cardOrder: cardOrder,
       title: title,
       desc: desc,
@@ -58,6 +59,7 @@ export class CardService {
 
     const cardDetails: CardDetailsDto = {
       cardOrder: card.cardOrder,
+      colum_id: card.colum_id,
       title: card.title,
       desc: card.desc,
       color: card.color,
@@ -103,9 +105,10 @@ export class CardService {
   }
 
   async updateCard(updateCardDto: UpdateCardDto, cardId: number) {
-    const { title, desc, color } = updateCardDto;
+    const { title, colum_id, desc, color } = updateCardDto;
     const card = await this.cardRepository.findOne({
       where: {
+        colum_id,
         id: cardId,
       },
     });
