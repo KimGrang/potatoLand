@@ -5,6 +5,7 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
 import { PassportModule } from "@nestjs/passport";
 import { JwtStrategy } from "./jwt.strategy";
+import { RedisModule } from "../redis/redis.module";
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { JwtStrategy } from "./jwt.strategy";
       imports: [ConfigModule],
     }),
     UserModule,
+    RedisModule,
   ],
   providers: [JwtStrategy],
 })

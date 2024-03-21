@@ -6,9 +6,11 @@ import { User } from "./entity/user.entity";
 import { JwtModule } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import { AwsService } from "../awss3/aws.service";
+import { RedisModule } from "../redis/redis.module";
 
 @Module({
-  imports: [ //외부 모듈, nest 모듈 
+  imports: [
+    //외부 모듈, nest 모듈
     JwtModule.registerAsync({
       useFactory: (config: ConfigService) => ({
         secret: config.get<string>("JWT_ACCESS_TOKEN_SECRET"),
@@ -19,9 +21,10 @@ import { AwsService } from "../awss3/aws.service";
       inject: [ConfigService],
     }),
     TypeOrmModule.forFeature([User]),
+    RedisModule,
   ],
   providers: [UserService, AwsService], //모듈에서 사용하는 service
   controllers: [UserController],
-  exports : [UserService, TypeOrmModule.forFeature([User])] //외부에서 사용하도록 공개
+  exports: [UserService, TypeOrmModule.forFeature([User])], //외부에서 사용하도록 공개
 })
 export class UserModule {}
