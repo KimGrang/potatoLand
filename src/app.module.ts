@@ -12,9 +12,9 @@ import { AuthModule } from "./auth/auth.module";
 import { RedisModule } from "@nestjs-modules/ioredis";
 import { typeOrmModuleOptions } from "../configs/database.config";
 import { configModuleValidationSchema } from "../configs/envValidation.config";
-import { CacheModule } from "@nestjs/cache-manager";
+import { CacheInterceptor, CacheModule } from "@nestjs/cache-manager";
 import { cacheModuleOptions } from "../configs/cache.config";
-// import { RedisModule } from '@nestjs-modules/ioredis';
+import { APP_INTERCEPTOR } from "@nestjs/core";
 
 @Module({
   imports: [
@@ -23,12 +23,14 @@ import { cacheModuleOptions } from "../configs/cache.config";
       validationSchema: configModuleValidationSchema,
     }),
     TypeOrmModule.forRootAsync(typeOrmModuleOptions),
+    CacheModule.registerAsync({
+      isGlobal: true,
+      ...cacheModuleOptions}),
     RedisModule.forRootAsync({
-      useFactory: () => ({
+      useFactory: async () => ({
         type: 'single',
       }),
     }),
-    CacheModule.registerAsync(cacheModuleOptions),
     AuthModule,
     BoardModule,
     ColumModule,

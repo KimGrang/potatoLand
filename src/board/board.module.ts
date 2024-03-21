@@ -20,7 +20,6 @@ import { Colum } from "../colum/entities/colum.entity";
       }),
       inject: [ConfigService],
     }),
-    CacheModule.registerAsync(cacheModuleOptions),
   ],
   controllers: [BoardController],
   providers: [BoardService],
