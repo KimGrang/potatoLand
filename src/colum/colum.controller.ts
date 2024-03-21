@@ -1,13 +1,16 @@
-import { Controller, Post, Body, Patch, Delete, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Body, Patch, Delete, HttpStatus, UseInterceptors } from '@nestjs/common';
 import { ColumService } from './colum.service';
 import { CreateColumDto } from './dto/createColum.dto';
 import { UpdateColumDto } from './dto/updateColum.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { RemoveColumDto } from './dto/removeColum.dto';
 import { ReorderColumDto } from './dto/reorderColum.dto';
+import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 
 @ApiTags('컬럼')
 @Controller('colum')
+@UseInterceptors(CacheInterceptor)
+@CacheTTL(30)
 export class ColumController {
   constructor(private readonly columService: ColumService) {}
 
