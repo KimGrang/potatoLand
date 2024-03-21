@@ -33,14 +33,11 @@ export class UserService {
 
   async checkEmail(uuid : string) {
     const user = await this.userRepository.findOneBy({emailYnCode : uuid});
-    user.emailYn = 'T';
+    user.emailYn = true;
     await this.userRepository.save(user);
   }
 
   async signUp(signupDto : SignUpDto) {
-    if (signupDto.password !== signupDto.confirmPassword) {
-      throw new BadRequestException('비밀번호가 일치하지 않습니다.');
-    }
     if (await this.findByEmail(signupDto.email)) {
       throw new ConflictException('이미 가입된 이메일 입니다.');
     };
@@ -50,7 +47,7 @@ export class UserService {
       email : signupDto.email,
       password : await hash(signupDto.password, 10),
       name : signupDto.name,
-      emailYn : 'F',
+      emailYn : false,
       emailYnCode : uuid
     });
 
@@ -68,7 +65,7 @@ export class UserService {
     if (_.isNull(user)) {
       throw new UnauthorizedException('이메일을 확인하세요.');
     }
-    if (user.emailYn === 'F') {
+    if (user.emailYn === false) {
       throw new UnauthorizedException('이메일 인증을 완료하세요');
     }
     if (!(await compare(signinDto.password, user.password))) {

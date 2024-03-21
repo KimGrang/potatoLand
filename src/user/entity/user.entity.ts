@@ -52,8 +52,8 @@ export class User {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @Column({ type: "varchar", nullable: false })
-  emailYn: string;
+  @Column({ type: "boolean", nullable: false })
+  emailYn: boolean;
 
   @Column({ type: "varchar", nullable: false })
   emailYnCode: string;
