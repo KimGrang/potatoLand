@@ -12,7 +12,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { ConfigService } from '@nestjs/config';
 import { Redis } from 'ioredis';
 import { InjectRedis } from '@nestjs-modules/ioredis';
-import { ProfileDto } from './dto/profile.dto';
+import { UpdateProfileDto } from './dto/update.profile.dto';
+import { AwsService } from '../awss3/aws.service';
 
 @Injectable()
 export class UserService {
@@ -21,6 +22,7 @@ export class UserService {
     private readonly userRepository : Repository<User>,
     private readonly jwtService : JwtService,
     private readonly configService: ConfigService,
+    private readonly awsService : AwsService,
     @InjectRedis()
     private readonly redisClient: Redis,
   ) {}
@@ -59,7 +61,7 @@ export class UserService {
 
   async signIn(signinDto : SignInDto) {
     const user = await this.userRepository.findOne({
-      select : ['id', 'email', 'password'],
+      select : ['id', 'email', 'password', 'emailYn'],
       where : {email : signinDto.email}
     });
 
@@ -80,10 +82,8 @@ export class UserService {
       secret : this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
       expiresIn : '604800s'
     });
-    
-    await this.redisClient.set(user.id.toString(), refreshToken, 'EX', '604800'); 
 
-    //EX 옵션을 사용하여 TTL(Time To Live)을 설정, 초단위, 7일
+    await this.redisClient.set(user.id.toString(), refreshToken, 'EX', '604800'); //EX 옵션을 사용하여 TTL(Time To Live)을 설정, 초단위, 7일
     return accessToken;
   }
 
@@ -102,5 +102,29 @@ export class UserService {
       subject: '이메일 인증',
       html: `<a href="http://localhost:3000/api/users/email?emailYn=${uuid}">이메일 인증</a>`
     });
+  }
+
+  public async profile (file : Express.Multer.File, updateProfileDto : UpdateProfileDto, user : User) {
+
+    try {
+      const updateUser = await this.userRepository.findOneBy({id : user.id});
+
+      //이미지 업로드
+      const uploadFile = await this.awsService.uploadFileToS3('image', file);
+  
+      //기존 프로필 이미지가 있으면 삭제
+      if (updateUser.imageKey) {
+        await this.awsService.deleteS3Object(updateUser.imageKey);
+      }
+  
+      updateUser.name = updateProfileDto.name;
+      updateUser.image = uploadFile.url;
+      updateUser.imageKey = uploadFile.key;
+  
+      return await this.userRepository.save(updateUser);
+    } catch (err) {
+      throw new BadRequestException(`프로필 수정 실패: ${err}`);
+    }
+
   }
 }

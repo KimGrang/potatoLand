@@ -1,17 +1,21 @@
-import { Body, Controller, Get, HttpStatus, Param, Post, Put, Query, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Param, Post, Put, Query, Res, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { UserService } from './user.service';
 import { Response } from 'express';
 import { SignUpDto } from './dto/signup.dto';
 import { SignInDto } from './dto/signin.dto';
-import { ApiCreatedResponse, ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOperation } from '@nestjs/swagger';
 import { User } from './entity/user.entity';
 import { UserInfo } from './decorator/userInfo.decorator';
 import { RolesGuard } from 'src/auth/roles.guard';
-import { ProfileDto } from './dto/profile.dto';
+import { UpdateProfileDto } from './dto/update.profile.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { AwsService } from '../awss3/aws.service';
 
 @Controller('users')
 export class UserController {
-  constructor( private readonly userService : UserService ) {}
+  constructor(
+    private readonly userService : UserService
+  ) {}
 
   @Post('signup')
   @ApiOperation({ summary: '회원가입 API', description: '회원가입을 진행한다.' })
@@ -43,22 +47,27 @@ export class UserController {
     })
   }
 
-  // @UseGuards(RolesGuard)
-  // @Put('profile')
-  // @ApiOperation({ summary: '프로필 API', description: '프로필을 수정한다.' })
-  // async profile(@UserInfo() user : User, @Body() profileDto : ProfileDto, @Res() res : Response) { 
-    
-  //   return res.status(HttpStatus.OK).json({
-  //     message : "프로필을 수정했습니다.",
-  //     user : await this.userService.profile(user, profileDto)
-  //   })
-  // }
-
   @UseGuards(RolesGuard)
   @Post('test')
   async test(@UserInfo() user : User, @Res() res : Response) {
+    console.log(user.id);
     return res.status(HttpStatus.OK).json({
       message: "test되면 안되는데"
     })
   }
+
+  @UseInterceptors(FileInterceptor('image'))
+  @UseGuards(RolesGuard)
+  @Post('profile')
+  @ApiOperation({ summary: '프로필 API', description: '프로필을 수정한다.' })
+  async profile(@UploadedFile() file: Express.Multer.File, 
+                @Res() res : Response, 
+                @Body() updateProfileDto : UpdateProfileDto,
+                @UserInfo() user : User) {
+    
+    return res.status(HttpStatus.OK).json({
+      message : "프로필을 수정했습니다.",
+      user : await this.userService.profile(file, updateProfileDto, user)
+    })
+  }  
 }

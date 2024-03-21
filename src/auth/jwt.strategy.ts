@@ -15,8 +15,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     private readonly userService: UserService,
     private readonly configService: ConfigService,
-    // @InjectRedis()
-    // private readonly redisClient : Redis,
+    @InjectRedis()
+    private readonly redisClient : Redis,
     private readonly jwtService: JwtService,
   ) {
     super({
@@ -32,7 +32,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       throw new NotFoundException('해당하는 사용자를 찾을 수 없습니다.');
     }
 
-    /* 
+   
     // Access Token이 만료되었는지 확인
     const currentTime = Math.floor(Date.now() / 1000);
 
@@ -46,9 +46,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       const newAccessToken = this.jwtService.sign({ email: user.email, sub: user.id });
       
       // 만료된 Access Token에 대한 예외 발생
-      console.log("토큰 만료 - 추흐 예외 핸들러로 response 던지기");
+      console.log("토큰 만료 - 추후 예외 핸들러로 response 던지기");
       throw new AccessTokenExpiredException(newAccessToken);
-    } */
+    } 
 
     return user; // HTTP 요청 컨텍스트로 return, ExecutionContext 객체를 통해 접근
   }

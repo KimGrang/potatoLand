@@ -9,12 +9,11 @@ import { CardModule } from "./card/card.module";
 import { CommentModule } from "./comment/comment.module";
 import { BoardModule } from "./board/board.module";
 import { AuthModule } from "./auth/auth.module";
-import { RedisModule } from "@nestjs-modules/ioredis";
 import { typeOrmModuleOptions } from "../configs/database.config";
 import { configModuleValidationSchema } from "../configs/envValidation.config";
-import { CacheInterceptor, CacheModule } from "@nestjs/cache-manager";
+import { RedisModule } from '@nestjs-modules/ioredis'; //외부 패키지
+import { CacheModule } from "@nestjs/cache-manager";
 import { cacheModuleOptions } from "../configs/cache.config";
-import { APP_INTERCEPTOR } from "@nestjs/core";
 
 @Module({
   imports: [
@@ -29,6 +28,7 @@ import { APP_INTERCEPTOR } from "@nestjs/core";
     RedisModule.forRootAsync({
       useFactory: async () => ({
         type: 'single',
+        url: process.env.REDIS_URL,
       }),
     }),
     AuthModule,
