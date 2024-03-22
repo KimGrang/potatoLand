@@ -15,6 +15,8 @@ import {
   UpdateCardDto,
   ReorderCardsDto,
 } from "./dto/card.dto";
+import { MoveCardDto } from "./dto/moveCard.dto";
+import _ from "lodash";
 
 @Injectable()
 export class CardService {
@@ -72,7 +74,49 @@ export class CardService {
     return cardDetails;
   }
 
-  async createCardWorker_(cardId: number, UserId: number): Promise<void> {
+  async reorderCards(reorderCardsDto: ReorderCardsDto): Promise<void> {
+    const { cardIds } = reorderCardsDto;
+    const cards = await this.cardRepository.find({
+      where: {
+        id: In(cardIds),
+      },
+    });
+    if (cards.length !== cardIds.length) {
+      throw new NotFoundException("해당 Id의 카드를 찾을 수 없습니다.");
+    }
+    const ordersMap = cardIds.reduce((map, id, index) => {
+      map[id] = index + 1;
+      return map;
+    }, {});
+    await Promise.all(
+      cards.map((card) => {
+        card.cardOrder = ordersMap[card.id];
+        return this.cardRepository.save(card);
+      }),
+    );
+  }
+
+  async updateCard(updateCardDto: UpdateCardDto, cardId: number) {
+    const { title, colum_id, desc, color } = updateCardDto;
+    const card = await this.cardRepository.findOne({
+      where: {
+        colum_id,
+        id: cardId,
+      },
+    });
+
+    if (!card) {
+      throw new NotFoundException("Card not found");
+    }
+
+    card.title = title ? title : card.title;
+    card.desc = desc ? desc : card.desc;
+    card.color = color ? color : card.color;
+
+    return this.cardRepository.save(card);
+  }
+
+  async assignCardToUser(cardId: number, UserId: number): Promise<void> {
     const card = await this.cardRepository.findOne({
       where: {
         id: cardId,
@@ -97,56 +141,36 @@ export class CardService {
     await this.worker_Repository.save(worker_);
   }
 
-  async removeCardWorker_(cardId: number, userId: number): Promise<void> {
+  async unassignCardFromUser(cardId: number, userId: number): Promise<void> {
     await this.worker_Repository.delete({
       card: { id: cardId },
       user: { id: userId },
     });
   }
 
-  async updateCard(updateCardDto: UpdateCardDto, cardId: number) {
-    const { title, colum_id, desc, color } = updateCardDto;
-    const card = await this.cardRepository.findOne({
-      where: {
-        colum_id,
-        id: cardId,
-      },
-    });
-
-    if (!card) {
-      throw new NotFoundException("Card not found");
-    }
-
-    card.title = title ? title : card.title;
-    card.desc = desc ? desc : card.desc;
-    card.color = color ? color : card.color;
-
-    return this.cardRepository.save(card);
-  }
-
   async deleteCard(cardId: number): Promise<void> {
     await this.cardRepository.delete(cardId);
   }
 
-  async reorderCards(reorderCardsDto: ReorderCardsDto): Promise<void> {
-    const { cardIds } = reorderCardsDto;
-    const cards = await this.cardRepository.find({
-      where: {
-        id: In(cardIds),
-      },
-    });
-    if (cards.length !== cardIds.length) {
-      throw new NotFoundException("해당 Id의 카드를 찾을 수 없습니다.");
+ async moveCard({id, colum_id}: MoveCardDto) {
+  console.log(id, colum_id)
+  const card = await this.cardRepository.findOne({
+    where: {
+      id
     }
-    const ordersMap = cardIds.reduce((map, id, index) => {
-      map[id] = index + 1;
-      return map;
-    }, {});
-    await Promise.all(
-      cards.map((card) => {
-        card.cardOrder = ordersMap[card.id];
-        return this.cardRepository.save(card);
-      }),
-    );
+  })
+  console.log('card?', card)
+  if(_.isNil(card)) {
+    throw new BadRequestException('유효하지 않은 요청입니다.')
   }
+  
+  card.colum_id = colum_id
+
+  const relocatedCard = await this.cardRepository.save(card)
+
+  return relocatedCard
+ }
+ 
+
+  
 }

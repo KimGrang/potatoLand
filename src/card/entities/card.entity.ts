@@ -16,6 +16,8 @@ import { Comment } from "../../comment/entities/comment.entity";
 
 @Entity("card")
 export class Card {
+
+  @IsNumber()
   @PrimaryGeneratedColumn({ type: "int", unsigned: true })
   @ApiProperty({ example: 1, description: "id" })
   id: number;
