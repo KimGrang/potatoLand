@@ -1,6 +1,6 @@
 import { IsNumber, IsNotEmpty, IsString, IsInt } from "class-validator";
-import { Board } from "src/board/entities/board.entity";
-import { Card } from "src/card/entities/card.entity";
+import { Board } from "../../board/entities/board.entity";
+import { Card } from "../../card/entities/card.entity";
 import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
@@ -48,8 +48,8 @@ export class Colum {
   @OneToMany(() => Card, (card) => card.colum)
   card: Card[];
 
-  @ManyToOne(() => Board, (board) => board.colum, { onDelete: "CASCADE" })
-  @JoinColumn({ name: "boardId", referencedColumnName: "id" })
+  @ManyToOne(()=> Board, board => board.colum, {onDelete: 'CASCADE'})
+  @JoinColumn({name: 'board_id', referencedColumnName: 'id'})
   board: Board | null;
 
   @IsInt()

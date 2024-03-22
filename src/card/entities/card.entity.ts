@@ -10,13 +10,12 @@ import {
 } from "typeorm";
 import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
-import { Colum } from "src/colum/entities/colum.entity";
+import { Colum } from "../../colum/entities/colum.entity";
 import { Working } from "./working.entity";
 import { Comment } from "../../comment/entities/comment.entity";
 
 @Entity("card")
 export class Card {
-
   @IsNumber()
   @PrimaryGeneratedColumn({ type: "int", unsigned: true })
   @ApiProperty({ example: 1, description: "id" })
@@ -57,13 +56,12 @@ export class Card {
   })
   updatedAt: Date;
 
-
-  @ManyToOne(() => Colum, colum => colum.card, {onDelete: 'CASCADE'})
-  @JoinColumn({name: 'colum_id', referencedColumnName: 'id'})
-  colum: Colum
+  @ManyToOne(() => Colum, (colum) => colum.card, { onDelete: "CASCADE" })
+  @JoinColumn({ name: "colum_id", referencedColumnName: "id" })
+  colum: Colum;
 
   @IsNumber()
-  @Column({unsigned: true})
+  @Column({ unsigned: true })
   colum_id: number;
 
   @OneToMany(() => Comment, (comment) => comment.card)

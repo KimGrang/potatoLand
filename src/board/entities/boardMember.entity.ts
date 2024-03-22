@@ -1,15 +1,15 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Board } from "./board.entity";
 import { User } from "../../user/entity/user.entity";
-import { BoardMemberType } from "src/board/types/boardMember.type";
+import { BoardMemberType } from "../../board/types/boardMember.type";
 import { ApiProperty } from "@nestjs/swagger";
 import { ConfigService } from "@nestjs/config";
 
-const configService = new ConfigService()
+const configService = new ConfigService();
 
 @Entity({
-  schema: configService.get<string>('DB_NAME'),
-  name: "boardmember"
+  schema: configService.get<string>("DB_NAME"),
+  name: "boardmember",
 })
 export class BoardMember {
   @ApiProperty({

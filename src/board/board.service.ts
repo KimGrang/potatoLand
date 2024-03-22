@@ -56,6 +56,10 @@ export class BoardService {
   }
 
   async updateBoard(user: User, id: number, updateBoardDto: UpdateBoardDto) {
+    if (_.isNaN(id)) {
+      throw new BadRequestException("잘못된 형식의 URL입니다.");
+    }
+
     const board = await this.getBoardAndRelations(id);
     const boardMember = board.members.filter(
       (boardMember) => boardMember.user.id === user.id,
@@ -72,6 +76,10 @@ export class BoardService {
   }
 
   async deleteBoard(user: User, id: number) {
+    if (_.isNaN(id)) {
+      throw new BadRequestException("잘못된 형식의 URL입니다.");
+    }
+
     const board = await this.getBoardAndRelations(id);
 
     // 생성한 사용자만 삭제 가능.
@@ -85,6 +93,9 @@ export class BoardService {
   }
 
   async getBoardById(user: User, id: number) {
+    if (_.isNaN(id)) {
+      throw new BadRequestException("잘못된 형식의 URL입니다.");
+    }
     const board = await this.getBoardAndRelations(id);
     const boardMember = board.members.filter(
       (boardMember) => boardMember.user.id === user.id,
@@ -97,16 +108,21 @@ export class BoardService {
 
     return board;
   }
+
   async invite(user: User, id: number, inviteBoardDto: InviteBoardDto) {
+    if (_.isNaN(id)) {
+      throw new BadRequestException("잘못된 형식의 URL입니다.");
+    }
+
     const board = await this.getBoardAndRelations(id);
     const boardMember = board.members.filter(
       (boardMember) => boardMember.user.id === user.id,
     );
-    const memberRole = boardMember[0].role;
+
     // 보드의 inviteOption이 all이면 보드의 멤버 누구나 초대 가능, adminOnly면 보드의 관리자만 초대 가능
     if (
       boardMember.length === 0 ||
-      (board.inviteOption === "adminOnly" && memberRole !== "admin")
+      (board.inviteOption === "adminOnly" && boardMember[0].role !== "admin")
     ) {
       throw new ForbiddenException("인가되지 않은 권한입니다.");
     }
@@ -120,6 +136,7 @@ export class BoardService {
       throw new BadRequestException("이미 초대된 사용자입니다.");
     }
 
+    const memberRole = boardMember[0].role;
     if (memberRole === "member" && role === "admin") {
       throw new ForbiddenException(
         `'member'는 member, guest, observer만 초대할 수 있습니다.`,
@@ -141,7 +158,7 @@ export class BoardService {
     }
     const payload = { userId, role, boardId: id };
     const token = this.jwtService.sign(payload, { expiresIn: `${expiresIn}h` });
-    const inviteLink = `http://localhost:${this.configService.get<string>('SERVER_PORT')}/api/board/confirm?token=${token}`;
+    const inviteLink = `http://localhost:${this.configService.get<string>("SERVER_PORT")}/api/board/confirm?token=${token}`;
     const sendTo = await this.userRepository.findOneBy({ id: userId });
 
     const transporter = nodemailer.createTransport({
@@ -196,6 +213,10 @@ export class BoardService {
     id: number,
     updateMemberDto: UpdateMemberDto,
   ) {
+    if (_.isNaN(id)) {
+      throw new BadRequestException("잘못된 형식의 URL입니다.");
+    }
+
     // 보드의 관리자만 권한 변경 가능.
     const board = await this.getBoardAndRelations(id);
     const boardMember = board.members.filter(
@@ -218,6 +239,10 @@ export class BoardService {
   }
 
   async deleteMember(user: User, id: number, deleteMemberDto: DeleteMemberDto) {
+    if (_.isNaN(id)) {
+      throw new BadRequestException("잘못된 형식의 URL입니다.");
+    }
+
     // 보드의 관리자만 권한 변경 가능.
     const board = await this.getBoardAndRelations(id);
     const boardMember = board.members.filter(
@@ -245,9 +270,8 @@ export class BoardService {
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
-  
-  async getBoardAndRelations(id: number) {
 
+  async getBoardAndRelations(id: number) {
     const board = await this.boardRepository
       .createQueryBuilder("board")
       .leftJoinAndSelect("board.createdBy", "createdBy")
