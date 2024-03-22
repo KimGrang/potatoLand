@@ -8,7 +8,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { IsDate, IsNotEmpty, IsNumber, IsString, Matches } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 import { Colum } from "src/colum/entities/colum.entity";
 import { Working } from "./working.entity";
@@ -42,6 +42,10 @@ export class Card {
   @Column({ type: "varchar", nullable: true })
   @ApiProperty({ example: "black", description: "color" })
   color: string;
+
+  @Matches('^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}$')
+  @Column({type: 'varchar', nullable: true})
+  deadline: string;
 
   @CreateDateColumn({ update: false })
   @ApiProperty({
