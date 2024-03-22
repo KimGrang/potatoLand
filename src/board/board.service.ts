@@ -282,3 +282,4 @@ export class BoardService {
     return board;
   }
 }
+// await this.connection .createQueryBuilder(User, 'user') .where('user.name = :name', { name }) .andWhere('user.gender =:gender',{gender:'man'}) .getOne()
