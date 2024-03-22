@@ -5,10 +5,12 @@ import {
   IsString,
   IsArray,
 } from "class-validator";
-import { ApiProperty } from "@nestjs/swagger";
-// import { Comment } from "../comment/entities/comment.entity";
+import { ApiProperty, PickType } from "@nestjs/swagger";
+import { Comment } from "../../comment/entities/comment.entity";
+import { Card } from "../entities/card.entity";
 
-export class CreateCardDto {
+export class CreateCardDto extends PickType (Card, ['colum_id']) {
+
   @ApiProperty({ example: 1, description: "cardOrder" })
   @IsNotEmpty()
   @IsNumber()
@@ -36,7 +38,7 @@ export class CreateCardDto {
   color?: string | null;
 }
 
-export class CardDetailsDto {
+export class CardDetailsDto extends PickType(Card, ['colum_id']) {
   @ApiProperty({ example: 1, description: "cardOrder", required: true })
   cardOrder: number;
   @ApiProperty({
@@ -53,6 +55,8 @@ export class CardDetailsDto {
   color: string;
   @ApiProperty({ example: 1, description: "id", required: true })
   id: number;
+  // @ApiProperty({ example: ["펩시","제로","라임"], description: "id", required: true })
+  comments: Comment[];
   @ApiProperty({
     example: "2024-03-19 06:14:10.769099",
     description: "createdAt",
@@ -65,7 +69,7 @@ export class CardDetailsDto {
   updatedAt: Date;
 }
 
-export class UpdateCardDto {
+export class UpdateCardDto extends PickType(Card, ['colum_id']) {
   @ApiProperty({
     example: "펩시 제로 라임",
     description: "cardOrder",
@@ -93,4 +97,14 @@ export class ReorderCardsDto {
   @IsArray()
   @IsNotEmpty({ message: "비었어" })
   cardIds: number[];
+}
+
+export class MoveCardDto {
+  @ApiProperty()
+  @IsNumber()
+  cardId: number;
+
+  @ApiProperty()
+  @IsNumber()
+  newColumId: number;
 }

@@ -2,18 +2,22 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
-
-// import { Board } from '../board/board.entity';
-// import { Comment } from '../comment/comment.entity';
+import { Colum } from "src/colum/entities/colum.entity";
+import { Working } from "./working.entity";
+import { Comment } from "../../comment/entities/comment.entity";
 
 @Entity("card")
 export class Card {
+
+  @IsNumber()
   @PrimaryGeneratedColumn({ type: "int", unsigned: true })
   @ApiProperty({ example: 1, description: "id" })
   id: number;
@@ -53,9 +57,18 @@ export class Card {
   })
   updatedAt: Date;
 
-  // @OneToMany(()=>Comment,(comment)=>comment.card)
-  // comment:Comment[];
 
-  // @ManyToOne(()=>Worker,(worker)=>worker.cards)
-  // worker:Worker;
+  @ManyToOne(() => Colum, colum => colum.card, {onDelete: 'CASCADE'})
+  @JoinColumn({name: 'colum_id', referencedColumnName: 'id'})
+  colum: Colum
+
+  @IsNumber()
+  @Column({unsigned: true})
+  colum_id: number;
+
+  @OneToMany(() => Comment, (comment) => comment.card)
+  comments: Comment[];
+
+  @OneToMany(() => Working, (working) => working.card)
+  working: Working[];
 }

@@ -1,20 +1,14 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { PickType } from '@nestjs/swagger';
+import { IsNotEmpty, IsString } from 'class-validator';
+import { User } from '../entity/user.entity';
 
-export class SignUpDto { //추후 PartialType 으로 변경
-
-  @IsEmail()
-  @IsNotEmpty({message : '이메일을 입력해주세요'})
-  email : string;
-
-  @IsString()
-  @IsNotEmpty({message : '비밀번호를 입력해주세요'})
-  password : string;
+export class SignUpDto extends PickType(User, ['email', 'password', 'name'] ) {
   
+  /**
+   * 비밀번호 확인
+   * @example "Ex@mple!!123"
+   */
   @IsString()
   @IsNotEmpty({message : '비밀번호를 확인하세요.'})
-  comfirmPassword : string;
-
-  @IsString()
-  @IsNotEmpty({message : '이름을 작성해주세요'})
-  name : string;
+  confirmPassword : string;
 }

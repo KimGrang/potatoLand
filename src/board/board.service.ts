@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -42,7 +43,7 @@ export class BoardService {
       description,
       visibility,
       inviteOption,
-      //createdBy: user,
+      createdBy: user,
     });
 
     await this.boardMemberRepository.save({
@@ -96,7 +97,6 @@ export class BoardService {
 
     return board;
   }
-
   async invite(user: User, id: number, inviteBoardDto: InviteBoardDto) {
     const board = await this.getBoardAndRelations(id);
     const boardMember = board.members.filter(
@@ -112,6 +112,14 @@ export class BoardService {
     }
 
     let { userId, expiresIn, role } = inviteBoardDto;
+
+    const isExist = board.members.filter(
+      (boardMember) => boardMember.user.id === userId,
+    );
+    if (isExist.length !== 0) {
+      throw new BadRequestException("이미 초대된 사용자입니다.");
+    }
+
     if (memberRole === "member" && role === "admin") {
       throw new ForbiddenException(
         `'member'는 member, guest, observer만 초대할 수 있습니다.`,
@@ -133,7 +141,7 @@ export class BoardService {
     }
     const payload = { userId, role, boardId: id };
     const token = this.jwtService.sign(payload, { expiresIn: `${expiresIn}h` });
-    const inviteLink = `http://localhost:3000/api/board/confirm?token=${token}`;
+    const inviteLink = `http://localhost:${this.configService.get<string>('SERVER_PORT')}/api/board/confirm?token=${token}`;
     const sendTo = await this.userRepository.findOneBy({ id: userId });
 
     const transporter = nodemailer.createTransport({
@@ -227,14 +235,19 @@ export class BoardService {
       throw new NotFoundException("존재하지 않는 멤버입니다.");
     }
 
+    if (changeMember[0].role === "admin") {
+      throw new ForbiddenException("보드의 관리자를 삭제할 수 없습니다.");
+    }
+
     await this.boardMemberRepository.delete({ id: memberId });
 
     return { message: "보드에서 해당 멤버가 삭제되었습니다." };
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+  
   async getBoardAndRelations(id: number) {
+
     const board = await this.boardRepository
       .createQueryBuilder("board")
       .leftJoinAndSelect("board.createdBy", "createdBy")
@@ -248,6 +261,7 @@ export class BoardService {
         "해당 요청에 필요한 결과를 찾을 수 없습니다.",
       );
     }
+
     return board;
   }
 }

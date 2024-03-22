@@ -9,6 +9,7 @@ import {
   Post,
   Query,
   UseGuards,
+  UseInterceptors,
 } from "@nestjs/common";
 import { BoardService } from "./board.service";
 import { CreateBoardDto } from "./dto/createBoard.dto";
@@ -17,13 +18,16 @@ import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import { UpdateBoardDto } from "./dto/updateBoard.dto";
 import { InviteBoardDto } from "./dto/inviteBoard.dto";
 import { UserInfo } from "src/user/decorator/userInfo.decorator";
-import { AuthGuard } from "@nestjs/passport";
 import { UpdateMemberDto } from "./dto/updateMember.dto";
 import { DeleteMemberDto } from "./dto/deleteMember.dto";
+import { RolesGuard } from "../auth/roles.guard";
+import { CacheInterceptor, CacheTTL } from "@nestjs/cache-manager";
 
 @ApiTags("Board")
-//@UseGuards(AuthGuard("jwt"))
+@UseGuards(RolesGuard)
 @Controller("board")
+@UseInterceptors(CacheInterceptor)
+@CacheTTL(30)
 export class BoardController {
   constructor(private readonly boardService: BoardService) {}
 
@@ -51,6 +55,7 @@ export class BoardController {
     return await this.boardService.invite(user, id, inviteBoardDto);
   }
 
+  //
   @ApiOperation({ summary: "초대 승인하기" })
   @Get("confirm")
   async confirm(@Query("token") token: string) {

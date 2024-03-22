@@ -37,7 +37,6 @@
   PASSWORD_HASH_ROUND = 
 
   ##jwt
-
   JWT_SECRET =
 
   ##nodemailer
@@ -51,3 +50,7 @@
   GMAIL_PASS_BOARD =
   
   JWT_SECRET_BOARD =
+
+  ##boardmember entity
+
+  DB_BOARDMEMBER = boardmember
