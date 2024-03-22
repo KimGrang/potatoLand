@@ -55,6 +55,7 @@ export class BoardController {
     return await this.boardService.invite(user, id, inviteBoardDto);
   }
 
+  //
   @ApiOperation({ summary: "초대 승인하기" })
   @Get("confirm")
   async confirm(@Query("token") token: string) {

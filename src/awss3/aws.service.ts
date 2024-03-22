@@ -41,7 +41,8 @@ export class AwsService {
           ContentType: file.mimetype,
         }).promise();
         
-      const imgUrl = `https://${this.S3_BUCKET_NAME}.s3.amazonaws.com/${key}`;  //phtatoland
+      const imgUrl = `https://${this.S3_BUCKET_NAME}.s3.amazonaws.com/${key}`;  
+      //phtatoland
       return { key, s3Object, contentType: file.mimetype, url: imgUrl };
     
     } catch (error) {
