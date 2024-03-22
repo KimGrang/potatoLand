@@ -117,18 +117,21 @@ export class UserService {
     try {
       const updateUser = await this.userRepository.findOneBy({ id: user.id });
 
-      //이미지 업로드
-      const uploadFile = await this.awsService.uploadFileToS3("image", file);
+      if (file) {
+        //이미지 업로드
+        const uploadFile = await this.awsService.uploadFileToS3('image', file);
 
-      //기존 프로필 이미지가 있으면 삭제
-      if (updateUser.imageKey) {
-        await this.awsService.deleteS3Object(updateUser.imageKey);
+        //기존 프로필 이미지가 있으면 삭제
+        if (updateUser.imageKey) {
+          await this.awsService.deleteS3Object(updateUser.imageKey);
+        }
+        updateUser.image = uploadFile.url;
+        updateUser.imageKey = uploadFile.key;
       }
 
-      updateUser.name = updateProfileDto.name;
-      updateUser.image = uploadFile.url;
-      updateUser.imageKey = uploadFile.key;
 
+      updateUser.name = updateProfileDto.name;
+  
       return await this.userRepository.save(updateUser);
     } catch (err) {
       throw new BadRequestException(`프로필 수정 실패: ${err}`);
