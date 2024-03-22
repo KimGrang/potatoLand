@@ -98,3 +98,13 @@ export class ReorderCardsDto {
   @IsNotEmpty({ message: "비었어" })
   cardIds: number[];
 }
+
+export class MoveCardDto {
+  @ApiProperty()
+  @IsNumber()
+  cardId: number;
+
+  @ApiProperty()
+  @IsNumber()
+  newColumId: number;
+}
