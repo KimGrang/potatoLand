@@ -7,15 +7,19 @@ import {
   Param,
   Patch,
   Post,
+  UseInterceptors,
   Put,
 } from "@nestjs/common";
 import { CardService } from "./card.service";
 import { CreateCardDto, UpdateCardDto, ReorderCardsDto } from "./dto/card.dto";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
+import { CacheInterceptor, CacheTTL } from "@nestjs/cache-manager";
 import { MoveCardDto } from "./dto/moveCard.dto";
 
 @ApiTags("Card")
 @Controller("card")
+@UseInterceptors(CacheInterceptor)
+@CacheTTL(30)
 export class CardController {
   constructor(private readonly cardService: CardService) {}
 

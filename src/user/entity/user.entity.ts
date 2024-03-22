@@ -5,7 +5,6 @@ import {
   CreateDateColumn,
   Entity,
   Index,
-  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -14,7 +13,6 @@ import {
 @Index("email", ["email"], { unique: true })
 @Entity({ name: "users" })
 export class User {
-
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -22,7 +20,7 @@ export class User {
    * 이메일
    * @example "gookbab99@gmail.com"
    */
-  @IsNotEmpty({message: '이메일을 입력해 주세요.'})
+  @IsNotEmpty({ message: "이메일을 입력해 주세요." })
   @IsString()
   @Column({ type: "varchar", unique: true, nullable: false })
   email: string;
@@ -34,18 +32,19 @@ export class User {
   @IsStrongPassword(
     {},
     {
-      message: '비밀번호는 영문 알파벳 대,소문자, 숫자, 특수문자(!@#$%^&*)를 포함해야 합니다.'
-    }
-    )
-  @Column({ type: "varchar", select: true, nullable: false })
+      message:
+        "비밀번호는 영문 알파벳 대,소문자, 숫자, 특수문자(!@#$%^&*)를 포함해야 합니다.",
+    },
+  )
+  @Column({ type: "varchar", select: false, nullable: false })
   password: string;
 
   /**
    * 이름
    * @example "국밥"
    */
-  @IsNotEmpty({ message: "이름을 입력해 주세요." }) 
-  @IsString() 
+  @IsNotEmpty({ message: "이름을 입력해 주세요." })
+  @IsString()
   @Column({ type: "varchar", nullable: false })
   name: string;
 
@@ -56,12 +55,8 @@ export class User {
   @Column({ type: "varchar", nullable: true })
   image: string;
 
-  //메모: boolean이 더 맞지 않나?
-  @Column({ type: "varchar", nullable: false })
-  emailYn: string;
-
-  @Column({ type: "varchar", nullable: false })
-  emailYnCode: string;
+  @Column({ type: "varchar", nullable: true })
+  imageKey: string;
 
   @CreateDateColumn()
   created_at: Date;
@@ -69,7 +64,12 @@ export class User {
   @UpdateDateColumn()
   updated_at: Date;
 
+  @Column({ type: "boolean", nullable: false })
+  emailYn: boolean;
+
+  @Column({ type: "varchar", nullable: false })
+  emailYnCode: string;
+
   @OneToMany(() => Board, (Board) => Board.createdBy)
   boards: Board[];
-
 }
