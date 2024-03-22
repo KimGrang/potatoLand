@@ -2,7 +2,6 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
-  NotFoundException,
   UnauthorizedException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -16,8 +15,6 @@ import { SignInDto } from "./dto/signin.dto";
 import * as nodemailer from "nodemailer";
 import { v4 as uuidv4 } from "uuid";
 import { ConfigService } from "@nestjs/config";
-import { Redis } from "ioredis";
-import { InjectRedis } from "@nestjs-modules/ioredis";
 import { UpdateProfileDto } from "./dto/update.profile.dto";
 import { AwsService } from "../awss3/aws.service";
 import { RedisService } from "../redis/redis.service";
@@ -108,7 +105,7 @@ export class UserService {
       from: this.configService.get<string>("GMAIL_USER"),
       to: email,
       subject: "이메일 인증",
-      html: `<a href="http://localhost:3000/api/users/email?emailYn=${uuid}">이메일 인증</a>`,
+      html: `<a href="http://localhost:${this.configService.get<string>('SERVER_PORT')}/api/users/email?emailYn=${uuid}">이메일 인증</a>`,
     });
   }
 

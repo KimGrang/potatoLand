@@ -141,7 +141,7 @@ export class BoardService {
     }
     const payload = { userId, role, boardId: id };
     const token = this.jwtService.sign(payload, { expiresIn: `${expiresIn}h` });
-    const inviteLink = `http://localhost:3000/api/board/confirm?token=${token}`;
+    const inviteLink = `http://localhost:${this.configService.get<string>('SERVER_PORT')}/api/board/confirm?token=${token}`;
     const sendTo = await this.userRepository.findOneBy({ id: userId });
 
     const transporter = nodemailer.createTransport({
@@ -247,23 +247,6 @@ export class BoardService {
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
   
   async getBoardAndRelations(id: number) {
-    // let board = await this.cacheService.get<Board>(`board:${id}`);
-    // if (_.isNil(board)) {
-    //   board = await this.boardRepository
-    //     .createQueryBuilder("board")
-    //     .leftJoinAndSelect("board.createdBy", "createdBy")
-    //     .leftJoinAndSelect("board.members", "members")
-    //     .leftJoinAndSelect("members.user", "user")
-    //     .where("board.id = :id", { id })
-    //     .getOne();
-
-    //   if (_.isNil(board)) {
-    //     throw new NotFoundException(
-    //       "해당 요청에 필요한 결과를 찾을 수 없습니다.",
-    //     );
-    //   }
-    //   await this.cacheService.set(`board:${id}`, board);
-    // }
 
     const board = await this.boardRepository
       .createQueryBuilder("board")
@@ -282,4 +265,3 @@ export class BoardService {
     return board;
   }
 }
-// await this.connection .createQueryBuilder(User, 'user') .where('user.name = :name', { name }) .andWhere('user.gender =:gender',{gender:'man'}) .getOne()
