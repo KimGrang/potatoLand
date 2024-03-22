@@ -5,10 +5,12 @@ import {
   IsString,
   IsArray,
 } from "class-validator";
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, PickType } from "@nestjs/swagger";
 import { Comment } from "../../comment/entities/comment.entity";
+import { Card } from "../entities/card.entity";
 
-export class CreateCardDto {
+export class CreateCardDto extends PickType (Card, ['colum_id']) {
+
   @ApiProperty({ example: 1, description: "cardOrder" })
   @IsNotEmpty()
   @IsNumber()
@@ -36,7 +38,7 @@ export class CreateCardDto {
   color?: string | null;
 }
 
-export class CardDetailsDto {
+export class CardDetailsDto extends PickType(Card, ['colum_id']) {
   @ApiProperty({ example: 1, description: "cardOrder", required: true })
   cardOrder: number;
   @ApiProperty({
@@ -67,7 +69,7 @@ export class CardDetailsDto {
   updatedAt: Date;
 }
 
-export class UpdateCardDto {
+export class UpdateCardDto extends PickType(Card, ['colum_id']) {
   @ApiProperty({
     example: "펩시 제로 라임",
     description: "cardOrder",

@@ -31,7 +31,7 @@ export class Board {
    * @example 1
    */
   @IsInt()
-  @PrimaryGeneratedColumn({ type: "int", unsigned: true })
+  @PrimaryGeneratedColumn({ unsigned: true })
   id: number;
 
   /**
@@ -90,7 +90,7 @@ export class Board {
   })
   inviteOption: InviteOption;
 
-  @ManyToOne(() => User, (user) => user.boards)
+  @ManyToOne(() => User, (user) => user.boards, {onDelete: 'CASCADE'})
   @ApiProperty({
     example: {
       email: "aaa@aaa.com",
@@ -147,5 +147,6 @@ export class Board {
   members: BoardMember[];
 
   @OneToMany(()=> Colum, colum => colum.board)
+  
   colum: Colum[]
 }

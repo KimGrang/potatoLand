@@ -10,6 +10,7 @@ export class Colum {
    * 컬럼 id
    * @example 1
    */
+  @IsNumber()
   @PrimaryGeneratedColumn({ type: "int", unsigned: true })
   id: number;
 
@@ -18,9 +19,8 @@ export class Colum {
    * @example 2
    */
   @IsNumber()
-  @IsNotEmpty({message: '컬럼 번호를 입력해 주세요.'})
-  @Column()
-  columOrder: number;
+  @Column({default: 1})
+  columOrder?: number;
 
   /**
    * 컬럼 이름
@@ -43,5 +43,8 @@ export class Colum {
   @ManyToOne(()=> Board, board => board.colum, {onDelete: 'CASCADE'})
   @JoinColumn({name: 'board_id', referencedColumnName: 'id'})
   board: Board | null;
-}
 
+  @IsInt()
+  @Column({unsigned: true})
+  board_id: number;
+}

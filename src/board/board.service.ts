@@ -97,7 +97,6 @@ export class BoardService {
 
     return board;
   }
-
   async invite(user: User, id: number, inviteBoardDto: InviteBoardDto) {
     const board = await this.getBoardAndRelations(id);
     const boardMember = board.members.filter(
@@ -142,7 +141,7 @@ export class BoardService {
     }
     const payload = { userId, role, boardId: id };
     const token = this.jwtService.sign(payload, { expiresIn: `${expiresIn}h` });
-    const inviteLink = `http://localhost:3000/api/board/confirm?token=${token}`;
+    const inviteLink = `http://localhost:${this.configService.get<string>('SERVER_PORT')}/api/board/confirm?token=${token}`;
     const sendTo = await this.userRepository.findOneBy({ id: userId });
 
     const transporter = nodemailer.createTransport({
