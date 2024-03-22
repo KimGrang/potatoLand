@@ -35,15 +35,15 @@ export class ColumService {
 
 
     const colum = await this.columRepository.save({
-      board_id, columOrder, title
-    })
+      board_id,
+      columOrder,
+      title,
+    });
 
 
 
     return colum;
   }
-
-
 
   //컬럼 이름 수정
   async update(user: User, updateColumDto: UpdateColumDto) {
@@ -130,11 +130,11 @@ export class ColumService {
     
     const colums = await this.columRepository.find({
       where: {
-        id: In(columIds)
-      }
+        id: In(columIds),
+      },
     });
-    if(colums.length !== columIds.length) {
-      throw new BadRequestException('유효하지 않은 요청입니다.')
+    if (colums.length !== columIds.length) {
+      throw new BadRequestException("유효하지 않은 요청입니다.");
     }
 
 
@@ -143,19 +143,19 @@ export class ColumService {
       if(element.board_id !== board_id) {
         throw new BadRequestException('유효하지 않은 요청입니다.')
       }
-    } 
+    }
 
     const ordersMap = columIds.reduce((map, id, index) => {
-      map[id] = index + 1
+      map[id] = index + 1;
       return map;
     }, {});
 
     await Promise.all(
       colums.map((colum) => {
         colum.columOrder = ordersMap[colum.id];
-        return this.columRepository.save(colum)
-      })
-    )
+        return this.columRepository.save(colum);
+      }),
+    );
   }
 
   ////////////////////////////////////////////////////////////
