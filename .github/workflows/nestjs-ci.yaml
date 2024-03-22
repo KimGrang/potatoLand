@@ -2,9 +2,9 @@ name: potatoland CI
 
 on:
   push:
-    branches: [new_dev, main]
+    branches: [main]
   pull_request:
-    branches: [new_dev, main]
+    branches: [main]
 
 jobs:
   build:
