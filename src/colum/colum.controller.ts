@@ -8,6 +8,8 @@ import { RemoveColumDto } from './dto/removeColum.dto';
 import { ReorderColumDto } from './dto/reorderColum.dto';
 import { RolesGuard } from '../auth/roles.guard';
 import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
+import { UserInfo } from '../user/decorator/userInfo.decorator';
+import { User } from '../user/entity/user.entity';
 
 
 @ApiTags('컬럼')
@@ -24,8 +26,8 @@ export class ColumController {
    * @returns
    */
   @Post()
-  async create(@Body() createColumDto: CreateColumDto) {
-    const data = await this.columService.create(createColumDto);
+  async create(@UserInfo() user: User, @Body() createColumDto: CreateColumDto) {
+    const data = await this.columService.create(user, createColumDto);
     return {
       statusCode: HttpStatus.CREATED,
       message: '컬럼이 생성되었습니다.',
@@ -39,8 +41,8 @@ export class ColumController {
  * @returns
  */
   @Patch('update')
-  async update(@Body() updateColumDto: UpdateColumDto) {
-    await this.columService.update(updateColumDto);
+  async update(@UserInfo() user: User, @Body() updateColumDto: UpdateColumDto) {
+    await this.columService.update(user, updateColumDto);
     return {
       statusCode: HttpStatus.CREATED,
       message: '컬럼 이름이 수정되었습니다.',
@@ -53,9 +55,9 @@ export class ColumController {
    * @returns
    */
   @Delete()
-  async remove(@Body() removeColumDto:RemoveColumDto ) {
+  async remove(@UserInfo() user: User, @Body() removeColumDto:RemoveColumDto ) {
     const {id} = removeColumDto
-    await this.columService.remove(id);
+    await this.columService.remove(user, id);
     return {
       statusCode: HttpStatus.OK,
       message: '컬럼이 삭제되었습니다.',
@@ -68,8 +70,8 @@ export class ColumController {
    * @returns
    */
   @Patch('reorder')
-  async reorderColum(@Body() reorderColumDto:ReorderColumDto) {
-    const data = await this.columService.reorderColum(reorderColumDto)
+  async reorderColum(@UserInfo() user: User, @Body() reorderColumDto:ReorderColumDto) {
+    const data = await this.columService.reorderColum(user, reorderColumDto)
     
     return {
       statusCode: HttpStatus.OK,

@@ -268,6 +268,19 @@ export class CardService {
   //     throw new BadRequestException('유효하지 않은 요청입니다.')
   //   }
 
+  async scheduleCard(user: User, boardId: number, {id, colum_id, deadline}) {
+    const {id: userId} = user 
+    const isMember = await this.isMemberOfBoard(userId, boardId);
+
+    if(_.isNil(isMember)) {
+      throw new UnauthorizedException('인가되지 않은 권한입니다.')
+    }
+
+    const scheduled = await this.cardRepository.save({id, colum_id, deadline})
+
+    return scheduled
+  }
+
   ////////////////////////////////////privatefunction///////////////////////////////////////
   private async isMemberOfBoard(
     userId: number,
