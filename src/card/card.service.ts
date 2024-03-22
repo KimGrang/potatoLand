@@ -19,6 +19,7 @@ import {
   ReorderCardsDto,
   MoveCardDto,
 } from "./dto/card.dto";
+import _ from "lodash";
 
 @Injectable()
 export class CardService {
@@ -36,7 +37,7 @@ export class CardService {
   ) {}
 
   async createCard(user: User, boardId: number, createCardDto: CreateCardDto) {
-    const { cardOrder, title, desc, color } = createCardDto;
+    const { cardOrder, colum_id, title, desc, color } = createCardDto;
     const userId = user.id;
     const isMember = await this.isMemberOfBoard(userId, boardId);
 
@@ -45,6 +46,7 @@ export class CardService {
     }
 
     const newCard = this.cardRepository.create({
+      colum_id,
       cardOrder: cardOrder,
       title: title,
       desc: desc,
@@ -71,6 +73,7 @@ export class CardService {
 
     const cardDetails: CardDetailsDto = {
       cardOrder: card.cardOrder,
+      colum_id: card.colum_id,
       title: card.title,
       desc: card.desc,
       color: card.color,
@@ -81,100 +84,6 @@ export class CardService {
     };
 
     return cardDetails;
-  }
-
-  async createCardWorker_(
-    user: User,
-    boardId: number,
-    cardId: number,
-    UserId: number,
-  ): Promise<void> {
-    const userId = user.id;
-    const isMember = await this.isMemberOfBoard(userId, boardId);
-
-    if (!isMember) {
-      throw new ForbiddenException("해당 보드의 멤버가 아닙니다.");
-    }
-    const card = await this.cardRepository.findOne({
-      where: {
-        id: cardId,
-      },
-    });
-
-    const user = await this.userRepository.findOne({
-      where: {
-        id: UserId,
-      },
-    });
-
-    if (!card || !user) {
-      throw new NotFoundException("유저 또는 카드를 찾을 수 없습니다.");
-    }
-
-    const worker_ = this.worker_Repository.create({
-      card,
-      user,
-    });
-
-    await this.worker_Repository.save(worker_);
-  }
-
-  async removeCardWorker_(
-    user: User,
-    boardId: number,
-    cardId: number,
-    workerId: number,
-  ): Promise<void> {
-    const userId = user.id;
-    const isMember = await this.isMemberOfBoard(userId, boardId);
-
-    if (!isMember) {
-      throw new ForbiddenException("해당 보드의 멤버가 아닙니다.");
-    }
-    await this.worker_Repository.delete({
-      card: { id: cardId },
-      user: { id: workerId },
-    });
-  }
-
-  async updateCard(
-    user: User,
-    boardId: number,
-    updateCardDto: UpdateCardDto,
-    cardId: number,
-  ) {
-    const userId = user.id;
-    const isMember = await this.isMemberOfBoard(userId, boardId);
-
-    if (!isMember) {
-      throw new ForbiddenException("해당 보드의 멤버가 아닙니다.");
-    }
-    const { title, desc, color } = updateCardDto;
-    const card = await this.cardRepository.findOne({
-      where: {
-        id: cardId,
-      },
-    });
-
-    if (!card) {
-      throw new NotFoundException("카드를 찾을 수 없습니다.");
-    }
-
-    card.title = title ? title : card.title;
-    card.desc = desc ? desc : card.desc;
-    card.color = color ? color : card.color;
-
-    return this.cardRepository.save(card);
-  }
-
-  async deleteCard(user: User, boardId: number, cardId: number): Promise<void> {
-    const userId = user.id;
-    const isMember = await this.isMemberOfBoard(userId, boardId);
-
-    if (!isMember) {
-      throw new ForbiddenException("해당 보드의 멤버가 아닙니다.");
-    }
-    await this.cardRepository.delete(cardId);
   }
 
   async reorderCards(
@@ -209,9 +118,111 @@ export class CardService {
     );
   }
 
-  async moveCard(moveCardDto: MoveCardDto): Promise<void> {
-    const { cardId, newColumId } = moveCardDto;
+  async updateCard(
+    user: User,
+    boardId: number,
+    updateCardDto: UpdateCardDto,
+    cardId: number,
+  ) {
+    const userId = user.id;
+    const isMember = await this.isMemberOfBoard(userId, boardId);
 
+    if (!isMember) {
+      throw new ForbiddenException("해당 보드의 멤버가 아닙니다.");
+    }
+    const { title, desc, color } = updateCardDto;
+    const card = await this.cardRepository.findOne({
+      where: {
+        id: cardId,
+      },
+    });
+
+    if (!card) {
+      throw new NotFoundException("카드를 찾을 수 없습니다.");
+    }
+
+    card.title = title ? title : card.title;
+    card.desc = desc ? desc : card.desc;
+    card.color = color ? color : card.color;
+
+    return this.cardRepository.save(card);
+  }
+
+  async createCardWorker_(
+    user: User,
+    boardId: number,
+    cardId: number,
+    UserId: number,
+  ): Promise<void> {
+    const userId = user.id;
+    const isMember = await this.isMemberOfBoard(userId, boardId);
+
+    if (!isMember) {
+      throw new ForbiddenException("해당 보드의 멤버가 아닙니다.");
+    }
+    const card = await this.cardRepository.findOne({
+      where: {
+        id: cardId,
+      },
+    });
+
+    const worker_user = await this.userRepository.findOne({
+      where: {
+        id: UserId,
+      },
+    });
+
+    if (!card || !worker_user) {
+      throw new NotFoundException("유저 또는 카드를 찾을 수 없습니다.");
+    }
+
+    const worker_ = this.worker_Repository.create({
+      card,
+      user: worker_user,
+    });
+
+    await this.worker_Repository.save(worker_);
+  }
+
+  async removeCardWorker_(
+    user: User,
+    boardId: number,
+    cardId: number,
+    workerId: number,
+  ): Promise<void> {
+    const userId = user.id;
+    const isMember = await this.isMemberOfBoard(userId, boardId);
+
+    if (!isMember) {
+      throw new ForbiddenException("해당 보드의 멤버가 아닙니다.");
+    }
+    await this.worker_Repository.delete({
+      card: { id: cardId },
+      user: { id: workerId },
+    });
+  }
+
+  async deleteCard(user: User, boardId: number, cardId: number): Promise<void> {
+    const userId = user.id;
+    const isMember = await this.isMemberOfBoard(userId, boardId);
+
+    if (!isMember) {
+      throw new ForbiddenException("해당 보드의 멤버가 아닙니다.");
+    }
+    await this.cardRepository.delete(cardId);
+  }
+
+  async moveCard(
+    user: User,
+    boardId: number,
+    moveCardDto: MoveCardDto,
+  ): Promise<void> {
+    const { cardId, newColumId } = moveCardDto;
+    const userId = user.id;
+    const isMember = await this.isMemberOfBoard(userId, boardId);
+    if (!isMember) {
+      throw new ForbiddenException("해당 보드의 멤버가 아닙니다.");
+    }
     const card = await this.cardRepository.findOne({
       where: {
         id: cardId,
@@ -236,6 +247,26 @@ export class CardService {
 
     this.cardRepository.save(card);
   }
+  //   card.colum_id = colum_id
+
+  //   const relocatedCard = await this.cardRepository.save(card)
+
+  //   return relocatedCard
+  //  }
+
+  //  async moveCard({id, colum_id}: MoveCardDto) {
+  //   console.log(id, colum_id)
+  //   const card = await this.cardRepository.findOne({
+  //     where: {
+  //       id
+
+  //     }
+  //   })
+
+  //   console.log('card?', card)
+  //   if(_.isNil(card)) {
+  //     throw new BadRequestException('유효하지 않은 요청입니다.')
+  //   }
 
   ////////////////////////////////////privatefunction///////////////////////////////////////
   private async isMemberOfBoard(
@@ -252,7 +283,6 @@ export class CardService {
     if (!board) {
       return false;
     }
-
     return board.members.some((member) => member.user.id === userId);
   }
 }
