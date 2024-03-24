@@ -20,7 +20,7 @@ export class Comment {
   // @ManyToOne(() => User)
   // author: User;
 
-  @ManyToOne(() => Card, (card) => card.comments)
+  @ManyToOne(() => Card, (card) => card.comments, {onDelete: 'CASCADE'})
   card: Card;
 
   @CreateDateColumn()
