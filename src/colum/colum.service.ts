@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateColumDto } from './dto/createColum.dto';
 import { UpdateColumDto } from './dto/updateColum.dto';
 import { In, Repository } from 'typeorm';

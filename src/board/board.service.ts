@@ -126,8 +126,9 @@ export class BoardService {
     ) {
       throw new ForbiddenException("인가되지 않은 권한입니다.");
     }
-
-    let { userId, expiresIn, role } = inviteBoardDto;
+    const {userId} = inviteBoardDto;
+    const {expiresIn} = inviteBoardDto;
+    let { role } = inviteBoardDto;
 
     const isExist = board.members.filter(
       (boardMember) => boardMember.user.id === userId,
