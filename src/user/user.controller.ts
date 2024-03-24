@@ -53,10 +53,10 @@ export class UserController {
 
   @Post("signin")
   @ApiOperation({ summary: "로그인 API", description: "로그인을 진행한다." })
-  async signIn(@Body() SignInDto: SignInDto, @Res() res: Response) {
+  async signIn(@Body() signInDto: SignInDto, @Res() res: Response) {
     return res.status(HttpStatus.OK).json({
       message: "로그인이 완료되었습니다",
-      access_token: await this.userService.signIn(SignInDto),
+      access_token: await this.userService.signIn(signInDto),
     });
   }
 
