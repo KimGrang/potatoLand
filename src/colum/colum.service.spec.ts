@@ -4,7 +4,6 @@ import { Repository } from "typeorm";
 import { Colum } from "./entities/colum.entity";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { CreateColumDto } from "./dto/createColum.dto";
-import { Card } from "../card/entities/card.entity";
 
 describe("ColumService", () => {
   let columService: ColumService;
