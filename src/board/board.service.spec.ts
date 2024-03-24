@@ -36,12 +36,11 @@ describe("BoardService", () => {
   let sendMailMock: jest.Mock;
 
   beforeEach(async () => {
-    sendMailMock = jest.fn().mockResolvedValue(true); // sendMail 메서드를 모킹합니다.
-
+    sendMailMock = jest.fn().mockResolvedValue(true); 
     const mockedNodemailer = nodemailer as jest.Mocked<typeof nodemailer>;
     mockedNodemailer.createTransport.mockReturnValue({
       sendMail: sendMailMock,
-    } as unknown as nodemailer.Transporter); // Transporter 타입으로 캐스팅합니다.
+    } as unknown as nodemailer.Transporter); 
 
     boardRepository = {
       save: jest.fn(),
