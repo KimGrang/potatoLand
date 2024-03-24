@@ -8,7 +8,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { IsDate, IsNotEmpty, IsNumber, IsString, Matches } from "class-validator";
+import { IsNotEmpty, IsNumber, IsString, Matches } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 import { Colum } from "../../colum/entities/colum.entity";
 import { Working } from "./working.entity";

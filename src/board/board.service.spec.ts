@@ -20,7 +20,6 @@ import {
 } from "@nestjs/common";
 import { InviteBoardDto } from "./dto/inviteBoard.dto";
 import * as nodemailer from "nodemailer";
-import { object } from "joi";
 import { UpdateMemberDto } from "./dto/updateMember.dto";
 import { DeleteMemberDto } from "./dto/deleteMember.dto";
 
@@ -29,7 +28,6 @@ jest.mock("nodemailer");
 describe("BoardService", () => {
   let boardService: BoardService;
   let jwtService: Partial<JwtService>;
-  let configService: Partial<ConfigService>;
   let boardRepository: Partial<Record<keyof Repository<Board>, jest.Mock>>;
   let boardMemberRepository: Partial<
     Record<keyof Repository<BoardMember>, jest.Mock>

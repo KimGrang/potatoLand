@@ -3,9 +3,7 @@ import {
   Controller,
   Get,
   HttpStatus,
-  Param,
   Post,
-  Put,
   Query,
   Res,
   UploadedFile,
@@ -17,8 +15,6 @@ import { Response } from "express";
 import { SignUpDto } from "./dto/signup.dto";
 import { SignInDto } from "./dto/signin.dto";
 import {
-  ApiBearerAuth,
-  ApiCreatedResponse,
   ApiOperation,
 } from "@nestjs/swagger";
 import { User } from "./entity/user.entity";
@@ -26,7 +22,6 @@ import { UserInfo } from "./decorator/userInfo.decorator";
 import { RolesGuard } from "src/auth/roles.guard";
 import { UpdateProfileDto } from "./dto/update.profile.dto";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { AwsService } from "../awss3/aws.service";
 
 @Controller("users")
 export class UserController {
