@@ -4,7 +4,6 @@ import { BoardService } from "./board.service";
 import { CACHE_MANAGER } from "@nestjs/cache-manager";
 import { User } from "../user/entity/user.entity";
 import {
-  ForbiddenException,
   HttpStatus,
   InternalServerErrorException,
   UnauthorizedException,
@@ -101,13 +100,6 @@ describe("BoardController", () => {
     createdBy: user,
     members: [boardMember, secondBoardMember],
   } as Board;
-
-  const mockUser = {
-    id: 999,
-    email: "test999@test.com",
-    password: "testing0*",
-    name: "test999",
-  } as User;
 
   ////////////////////////////////////////////////////////////////////////////
 
@@ -262,7 +254,6 @@ describe("BoardController", () => {
     });
 
     it("should throw InternalServerError if id from parameter is wrong", async () => {
-      const falseId = Number("false"); // Number(undefined);
 
       boardService.deleteBoard.mockRejectedValue(InternalServerErrorException);
 
@@ -284,7 +275,6 @@ describe("BoardController", () => {
     });
 
     it("should throw InternalServerError if id from parameter is wrong", async () => {
-      const falseId = Number("false"); // Number(undefined);
 
       boardService.getBoardById.mockRejectedValue(InternalServerErrorException);
 
