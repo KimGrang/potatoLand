@@ -8,10 +8,10 @@ import { Card } from "../card/entities/card.entity";
 
 describe("ColumService", () => {
   let columService: ColumService;
-  let columRepotiory: Partial<Record<keyof Repository<Colum>, jest.Mock>>;
+  let columRepository: Partial<Record<keyof Repository<Colum>, jest.Mock>>;
 
   beforeEach(async () => {
-    columRepotiory = {
+    columRepository = {
       save: jest.fn(),
       findOne: jest.fn(),
       update: jest.fn(),
@@ -25,7 +25,7 @@ describe("ColumService", () => {
         ColumService,
         {
           provide: getRepositoryToken(Colum),
-          useValue: columRepotiory,
+          useValue: columRepository,
         },
       ],
     }).compile();
@@ -54,15 +54,29 @@ describe("ColumService", () => {
         card: [],
         board_id: 1,
       } as Colum;
+      
+      const user = {
+        id: 1,
+        email: 'gookbab99@gmail.com',
+        password: 'Ex@mple!!123',
+        name: '국밥',
+        image: '국밥은 맛있다',
+        imageKey: '맛있는 국밥',
+        created_at: new Date(),
+        updated_at: new Date(),
+        emailYn: true,
+        emailYnCode: '0612a8',
+        boards: []
+      }
 
-      columRepotiory.save.mockResolvedValue(colum);
+      columRepository.save.mockResolvedValue(colum);
 
       // act
-      const result = await columService.create(createColumDto);
+      const result = await columService.create(user, createColumDto);
 
       // assert
-      expect(columRepotiory.save).toHaveBeenCalled();
-      expect(columRepotiory.save).toHaveBeenCalledWith(createColumDto);
+      expect(columRepository.save).toHaveBeenCalled();
+      expect(columRepository.save).toHaveBeenCalledWith(createColumDto);
       expect(result).toEqual(colum);
     });
   });
