@@ -21,8 +21,7 @@ import { BoardMember } from "./boardMember.entity";
 import { User } from "../../user/entity/user.entity";
 import { InviteOption } from "../types/inviteOption.type";
 import { ApiProperty } from "@nestjs/swagger";
-import { Colum } from "src/colum/entities/colum.entity";
-
+import { Colum } from "../../colum/entities/colum.entity";
 
 @Entity("board")
 export class Board {
@@ -59,7 +58,7 @@ export class Board {
    */
   @IsString()
   @IsNotEmpty({ message: "보드의 배경 색을 명시해주세요." })
-  @Column({ type: "varchar", length: 10 })
+  @Column({ type: "varchar", length: 20 })
   backgroundColor: string;
 
   /**
@@ -90,7 +89,7 @@ export class Board {
   })
   inviteOption: InviteOption;
 
-  @ManyToOne(() => User, (user) => user.boards, {onDelete: 'CASCADE'})
+  @ManyToOne(() => User, (user) => user.boards, { onDelete: "CASCADE" })
   @ApiProperty({
     example: {
       email: "aaa@aaa.com",
@@ -146,7 +145,6 @@ export class Board {
   })
   members: BoardMember[];
 
-  @OneToMany(()=> Colum, colum => colum.board)
-  
-  colum: Colum[]
+  @OneToMany(() => Colum, (colum) => colum.board)
+  colum: Colum[];
 }

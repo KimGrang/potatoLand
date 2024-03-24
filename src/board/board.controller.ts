@@ -17,7 +17,7 @@ import { User } from "../user/entity/user.entity";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import { UpdateBoardDto } from "./dto/updateBoard.dto";
 import { InviteBoardDto } from "./dto/inviteBoard.dto";
-import { UserInfo } from "src/user/decorator/userInfo.decorator";
+import { UserInfo } from "../user/decorator/userInfo.decorator";
 import { UpdateMemberDto } from "./dto/updateMember.dto";
 import { DeleteMemberDto } from "./dto/deleteMember.dto";
 import { RolesGuard } from "../auth/roles.guard";
@@ -55,7 +55,6 @@ export class BoardController {
     return await this.boardService.invite(user, id, inviteBoardDto);
   }
 
-  //
   @ApiOperation({ summary: "초대 승인하기" })
   @Get("confirm")
   async confirm(@Query("token") token: string) {

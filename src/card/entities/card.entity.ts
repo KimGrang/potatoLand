@@ -8,15 +8,14 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { IsDate, IsNotEmpty, IsNumber, IsString, Matches } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
-import { Colum } from "src/colum/entities/colum.entity";
+import { Colum } from "../../colum/entities/colum.entity";
 import { Working } from "./working.entity";
 import { Comment } from "../../comment/entities/comment.entity";
 
 @Entity("card")
 export class Card {
-
   @IsNumber()
   @PrimaryGeneratedColumn({ type: "int", unsigned: true })
   @ApiProperty({ example: 1, description: "id" })
@@ -43,6 +42,10 @@ export class Card {
   @ApiProperty({ example: "black", description: "color" })
   color: string;
 
+  @Matches('^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}$')
+  @Column({type: 'varchar', nullable: true})
+  deadline: string;
+
   @CreateDateColumn({ update: false })
   @ApiProperty({
     example: "2024-03-19 06:14:10.769099",
@@ -57,13 +60,12 @@ export class Card {
   })
   updatedAt: Date;
 
-
-  @ManyToOne(() => Colum, colum => colum.card, {onDelete: 'CASCADE'})
-  @JoinColumn({name: 'colum_id', referencedColumnName: 'id'})
-  colum: Colum
+  @ManyToOne(() => Colum, (colum) => colum.card, { onDelete: "CASCADE" })
+  @JoinColumn({ name: "colum_id", referencedColumnName: "id" })
+  colum: Colum;
 
   @IsNumber()
-  @Column({unsigned: true})
+  @Column({ unsigned: true })
   colum_id: number;
 
   @OneToMany(() => Comment, (comment) => comment.card)

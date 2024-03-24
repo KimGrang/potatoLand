@@ -23,6 +23,7 @@ import {
   MoveCardDto,
 } from "src/card/dto/card.dto";
 import { RolesGuard } from "src/auth/roles.guard";
+import { ScheduleCardDto } from "./dto/scheduleCard.dto";
 
 @ApiTags("Card")
 @UseGuards(RolesGuard)
@@ -162,5 +163,18 @@ export class CardController {
       statusCode: HttpStatus.OK,
       message: "카드가 성공적으로 이동되었습니다",
     };
+  }
+
+  @Post(':boardId/deadline')
+  async scheduleCard(
+    @UserInfo() user: User,
+    @Param("boardId") boardId: number,
+    @Body() scheduleCardDto: ScheduleCardDto
+  ) {
+    await this.cardService.scheduleCard(user, boardId, scheduleCardDto)
+    return {
+      statusCode: HttpStatus.CREATED,
+      message: "마감일이 등록되었습니다."
+    }
   }
 }
