@@ -20,37 +20,60 @@
   
   ##mysql2
   #(./configs/database.config.ts)
-  DB_HOST = 
-  DB_PORT = 
-  DB_USERNAME = 
-  DB_PASSWORD = 
-  DB_NAME = 
+  
+  DB_HOST =
+   
+  DB_PORT =
+   
+  DB_USERNAME =
+   
+  DB_PASSWORD =
+   
+  DB_NAME =
+   
   DB_SYNC = 
 
   ##bcrypt
+  
   PASSWORD_HASH_ROUND = 
 
   ##jwt
+  
   JWT_SECRET =
+  
   JWT_ACCESS_TOKEN_SECRET =
+  
   JWT_REFRESH_TOKEN_SECRET = 
 
   ##nodemailer
+  
   GMAIL_USER =
+  
   GMAIL_PASS =
+  
   GMAIL_USER_BOARD =
+  
   GMAIL_PASS_BOARD =
+  
   JWT_SECRET_BOARD =
 
   ##redis
+  
   REDIS_USERNAME =
+  
   REDIS_PASSWORD =
+  
   REDIS_HOST =
+  
   REDIS_PORT =
 
   ##S3 Multer
+  
   S3ACCESSKEY =
+  
   S3SECRETKEY =
+  
   S3REGION =
+  
   S3BUCKET = 
 
