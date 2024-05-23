@@ -1,5 +1,5 @@
 1. API 명세서: https://teamsparta.notion.site/1f9996c2cb664e60b2375f5f8aeaa873
-2. ERD: https://www.erdcloud.com/d/H7PGvjffLTHGH3cRF
+2. ERD: https://stone-artichoke-8a8.notion.site/30ef652d159d4a83b5fe097b2ceaa2a9?pvs=4
 
 
 # PotatoLand, 프로젝트 협업도구(Canvan Board) 제작 프로젝트.
